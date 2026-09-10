@@ -1,0 +1,1023 @@
+import React, { useState, useEffect, useRef } from 'react';
+import { BrowserRouter as Router, Routes, Route, Link, useNavigate, useLocation } from 'react-router-dom';
+import {
+  Instagram,
+  MessageCircle,
+  ArrowUpRight,
+  Search,
+  X,
+  Menu,
+  Mail,
+} from 'lucide-react';
+
+
+// --- COMPONENTE EXTERNOS ---
+import CasasUrbanas from './casasurbanas';
+import Montanha from './terrenos';
+import Apartamentos from './apartamentos';
+import CasadeCampoeMontanha from './casadecampoemontanha';
+import MagazinePage from './magazinepage';
+import ComercialECorporativo from './comercialecorporativo';
+import PoliticaPrivacidade from './PoliticaPrivacidade'; // Ajuste o caminho
+import TermosUso from './TermosUso'; // Ajuste o caminho
+
+const translations = {
+  'pt': {
+    nav: ["Início", "Sobre Nós", "Propriedades", "Contato", "Magazine"],
+    hero: {
+      label: "Propriedades",
+      titles: [
+        "ARQUITETURA CONTEMPORÂNEA",
+        "A ARTE DE VIVER BEM NO CAMPO",
+        "DESIGN E SOFISTICAÇÃO INTERIOR",
+        "Detalhes que inspiram viver."
+      ]
+    },
+    propTitles: ["Casas de Campo e Montanha", "Casas Urbanas", "Apartamentos", "Terrenos", "Comercial e Corporativo"],
+    propPaths: ["/casadecampoemontanha", "/casasurbanas", "/apartamentos", "/casasdemontanha", "/comercialecorporativo"],
+    about: { title: "SOBRE NÓS", stats: ["Anos de Mercado", "Em Vendas", "Foco em Luxo"] },
+    section: { find: "Encontre sua próxima propriedade", details: "VER DETALHES" },
+    footer: { rights: "© 2026 A Propriedade - Todos os direitos reservados" },
+    whatsappCTA: "FALE CONOSCO"
+  },
+  'en': {
+    nav: ["Home", "About Us", "Properties", "Contact", "Magazine"],
+    hero: {
+      label: "Properties",
+      titles: [
+        "CONTEMPORARY ARCHITECTURE",
+        "THE ART OF COUNTRY LIVING",
+        "INTERIOR DESIGN & SOPHISTICATION",
+        "Details that inspire living."
+      ]
+    },
+    propTitles: ["Country & Mountain Houses", "Urban Houses", "Apartments", "Land Plots", "Commercial & Corporate"],
+    propPaths: ["/casadecampoemontanha", "/casasurbanas", "/apartamentos", "/casasdemontanha", "/comercialecorporativo"],
+    about: { title: "ABOUT US", stats: ["Years in Market", "in Sales", "Luxury Focus"] },
+    section: { find: "Find your next property", details: "VIEW DETAILS" },
+    footer: { rights: "© 2026 A Propriedade - All rights reserved" },
+    whatsappCTA: "CONTACT US"
+  }
+};
+
+const heroContent = [
+  { type: 'image', url: "/hero/hero4.jpg" },
+  { type: 'image', url: "/hero/hero9.jpg" },
+  { type: 'image', url: "/hero/hero1.jpg" },
+  { type: 'image', url: "/hero/hero12.jpg" },
+];
+
+const instagramUrl = "https://www.instagram.com/apropriedadeimoveis?igsh=MTh3dDlqYmozdXQ3eA==";
+const whatsappUrl = "https://wa.me/5519982828990";
+const cyanBrand = "#49BFEA";
+
+const menuRoutes = {
+  "Início": "/", "Home": "/",
+  "Sobre Nós": "#sobre", "About Us": "#sobre",
+  "Magazine": "/magazinepage",
+  "Propriedades": "#", "Properties": "#",
+  "Contato": "#contato", "Contact": "#contato"
+};
+
+// --- COMPONENTE HEADER GLOBAL ---
+const Header = ({ lang, setLang }: { lang: 'pt' | 'en'; setLang: (l: 'pt' | 'en') => void }) => {
+  const t = translations[lang];
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isMobilePropOpen, setIsMobilePropOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 20) {
+        setIsScrolled(true);
+      } else {
+        setIsScrolled(false);
+      }
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const handleNavigation = (e: React.MouseEvent, path: string) => {
+    setIsMobileMenuOpen(false);
+    if (path === "/") {
+      if (location.pathname === "/") {
+        e.preventDefault();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    } else if (path === "#sobre") {
+      e.preventDefault();
+      if (location.pathname !== "/") {
+        navigate("/", { state: { scrollToAbout: true } });
+      } else {
+        document.getElementById('sobre')?.scrollIntoView({ behavior: 'smooth' });
+      }
+    } else if (path === "#contato") {
+      e.preventDefault();
+      if (location.pathname !== "/") {
+        navigate("/", { state: { scrollToContact: true } });
+      } else {
+        document.getElementById('contato')?.scrollIntoView({ behavior: 'smooth' });
+      }
+    } else if (path === "whatsapp") {
+      e.preventDefault();
+      window.open(whatsappUrl, '_blank', 'noopener,noreferrer');
+    }
+  };
+
+  const filteredProperties = t.propTitles.map((title, idx) => ({
+    title,
+    path: t.propPaths[idx]
+  })).filter(prop => prop.title.toLowerCase().includes(searchQuery.toLowerCase()));
+
+  return (
+    <header className="bg-white pt-3 pb-3 border-b border-gray-100 relative z-50">
+      <div className="container mx-auto px-4 sm:px-6">
+        <div className="flex justify-between items-center transition-all duration-500">
+
+          {/* Esquerda: Menu Hambúrguer (Mobile) OU Botão "Pesquisar" (Desktop) */}
+          <div className="flex-1 flex justify-start items-center gap-3">
+            {/* Ícone Hambúrguer visível apenas no Mobile */}
+            <button
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="md:hidden text-gray-900 p-1 focus:outline-none hover:opacity-70 transition-opacity"
+              aria-label="Menu"
+            >
+              <Menu size={26} strokeWidth={1.2} />
+            </button>
+
+            {/* Botão de Pesquisa visível apenas no Desktop */}
+            <button
+              onClick={() => setIsSearchOpen(true)}
+              className="hidden md:flex border border-gray-700 px-3 sm:px-5 py-1.5 rounded-full text-[11px] sm:text-[12px] tracking-widest uppercase hover:bg-gray-50 font-bold transition-all items-center gap-2"
+            >
+              <Search size={14} className="text-gray-700" />
+              <span>{lang === 'pt' ? 'Pesquisar' : 'Search'}</span>
+            </button>
+          </div>
+
+          {/* Centro: Logo Perfeitamente Centralizada */}
+          <div className="flex-1 flex justify-center items-center pt-5">
+            <Link to="/">
+              <img
+                src="/logo/title3.png"
+                alt="A Propriedade"
+                className={`w-auto cursor-pointer transition-all duration-500 ease-in-out transform scale-x-[1.15] sm:scale-x-100 ${isScrolled ? 'h-6 sm:h-8 lg:h-10' : 'h-8 sm:h-10 lg:h-12'
+                  }`}
+              />
+            </Link>
+          </div>
+
+          {/* Direita: Lupa simples (Mobile) OU Redes e Idioma (Desktop) */}
+          <div className="flex-1 flex justify-end items-center gap-3 sm:gap-5">
+            {/* Ícone de Busca simples visível apenas no Mobile */}
+            <button
+              onClick={() => setIsSearchOpen(true)}
+              className="md:hidden text-gray-900 hover:opacity-70 transition-opacity p-1"
+              aria-label="Pesquisar"
+            >
+              <Search size={22} strokeWidth={1.2} />
+            </button>
+
+            {/* Instagram e Idiomas visíveis apenas no Desktop */}
+            <div className="hidden md:flex items-center gap-4 text-gray-600">
+              <a href={instagramUrl} target="_blank" rel="noreferrer" className="hover:text-black transition-colors">
+                <Instagram size={20} strokeWidth={1.2} />
+              </a>
+              <div className="flex gap-2 items-center border-l border-gray-400 pl-4">
+                <button onClick={() => { setLang('pt'); localStorage.setItem('language', 'pt'); }} className={`${lang === 'pt' ? 'opacity-100' : 'opacity-40'} transition-opacity`}>
+                  <img src="https://flagcdn.com/w40/br.png" className="w-5 sm:w-6" alt="PT" />
+                </button>
+                <button onClick={() => { setLang('en'); localStorage.setItem('language', 'en'); }} className={`${lang === 'en' ? 'opacity-100' : 'opacity-40'} transition-opacity`}>
+                  <img src="https://flagcdn.com/w40/us.png" className="w-5 sm:w-6" alt="EN" />
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Navegação Desktop (Oculta em Mobile) */}
+        <nav className="hidden md:flex justify-center items-center gap-8 lg:gap-12 py-1 mt-4 relative">
+          {t.nav.map((item, i) => {
+            const path = menuRoutes[item] || "#";
+            const isPropItem = item === "Propriedades" || item === "Properties";
+            const isScrollItem = path.startsWith('#');
+
+            return (
+              <div key={i} className="group flex flex-col items-center mt-2">
+                {isScrollItem ? (
+                  <a
+                    href={path}
+                    onClick={(e) => handleNavigation(e, path)}
+                    className="relative text-[14px] lg:text-[16px] font-bold tracking-[0.2em] uppercase text-gray-900 pb-2"
+                  >
+                    {item}
+                    <span className="absolute left-0 bottom-1 w-0 h-[1.5px] bg-gray-500 transition-all duration-500 ease-in-out group-hover:w-full"></span>
+                  </a>
+                ) : (
+                  <Link
+                    to={path === "#" || path === "whatsapp" ? "" : path}
+                    onClick={(e) => handleNavigation(e, path)}
+                    className="relative text-[14px] lg:text-[16px] font-bold tracking-[0.2em] uppercase text-gray-900 pb-2"
+                  >
+                    {item}
+                    <span className="absolute left-0 bottom-1 w-0 h-[1.5px] bg-gray-500 transition-all duration-500 ease-in-out group-hover:w-full"></span>
+                  </Link>
+                )}
+
+                {isPropItem && (
+                  <div className="absolute left-1/2 -translate-x-1/2 top-[100%] w-screen bg-white opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 border-t border-gray-100 py-6 z-50 flex justify-center gap-10 shadow-sm">
+                    {t.propTitles.map((title, idx) => (
+                      <Link
+                        key={idx}
+                        to={t.propPaths[idx]}
+                        className="relative text-[15px] font-bold tracking-[0.15em] uppercase text-gray-600 hover:text-black transition-colors pb-1 group/sub"
+                      >
+                        {title}
+                        <span className="absolute left-0 bottom-0 w-0 h-[1px] bg-black transition-all duration-500 ease-in-out group-hover/sub:w-full"></span>
+                      </Link>
+                    ))}
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </nav>
+
+        {/* Menu Drawer Lateral Retrátil (Exclusivo Mobile) */}
+        {isMobileMenuOpen && (
+          <div className="fixed inset-0 z-[120] flex md:hidden">
+            {/* Backdrop escuro */}
+            <div
+              className="fixed inset-0 bg-black/40 backdrop-blur-sm transition-opacity"
+              onClick={() => setIsMobileMenuOpen(false)}
+            />
+
+            {/* Painel da Esquerda */}
+            <div className="relative w-80 max-w-[85vw] bg-white h-full shadow-2xl z-10 p-6 flex flex-col justify-between overflow-y-auto animate-fade-in">
+              <div>
+                {/* Botão X para fechar */}
+                <div className="flex justify-start mb-8">
+                  <button
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="text-gray-900 hover:opacity-70 transition-opacity p-1"
+                    aria-label="Fechar Menu"
+                  >
+                    <X size={26} strokeWidth={1.2} />
+                  </button>
+                </div>
+
+                {/* Links da Navegação Mobile */}
+                <nav className="flex flex-col space-y-5">
+                  {t.nav.map((item, i) => {
+                    const path = menuRoutes[item] || "#";
+                    const isPropItem = item === "Propriedades" || item === "Properties";
+                    const isScrollItem = path.startsWith('#');
+
+                    if (isPropItem) {
+                      return (
+                        <div key={i} className="flex flex-col">
+                          <button
+                            onClick={() => setIsMobilePropOpen(!isMobilePropOpen)}
+                            className="flex justify-between items-center text-sm font-bold tracking-[0.15em] uppercase text-gray-900 py-1 hover:opacity-70 transition-opacity"
+                          >
+                            <span>{item}</span>
+                            <span className="text-xs">{isMobilePropOpen ? '−' : '+'}</span>
+                          </button>
+                          {isMobilePropOpen && (
+                            <div className="pl-4 flex flex-col space-y-3 py-2 border-l border-gray-200 mt-2">
+                              {t.propTitles.map((title, idx) => (
+                                <Link
+                                  key={idx}
+                                  to={t.propPaths[idx]}
+                                  onClick={() => setIsMobileMenuOpen(false)}
+                                  className="text-xs font-bold tracking-[0.1em] uppercase text-gray-600 hover:text-black transition-colors"
+                                >
+                                  {title}
+                                </Link>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                      );
+                    }
+
+                    return isScrollItem ? (
+                      <a
+                        key={i}
+                        href={path}
+                        onClick={(e) => {
+                          handleNavigation(e, path);
+                          setIsMobileMenuOpen(false);
+                        }}
+                        className="text-sm font-bold tracking-[0.15em] uppercase text-gray-900 py-1 hover:opacity-70 transition-opacity"
+                      >
+                        {item}
+                      </a>
+                    ) : (
+                      <Link
+                        key={i}
+                        to={path === "#" || path === "whatsapp" ? "" : path}
+                        onClick={(e) => {
+                          handleNavigation(e, path);
+                          setIsMobileMenuOpen(false);
+                        }}
+                        className="text-sm font-bold tracking-[0.15em] uppercase text-gray-900 py-1 hover:opacity-70 transition-opacity"
+                      >
+                        {item}
+                      </Link>
+                    );
+                  })}
+                </nav>
+              </div>
+
+              {/* Rodapé do Menu Mobile (Social e Idiomas) */}
+              <div className="pt-6 border-t border-gray-100 flex items-center justify-between mt-8">
+                <a href={instagramUrl} target="_blank" rel="noreferrer" className="flex items-center gap-2 text-gray-700 text-xs font-bold uppercase tracking-wider hover:text-black transition-colors">
+                  <Instagram size={18} strokeWidth={1.5} /> Instagram
+                </a>
+                <div className="flex gap-3 items-center">
+                  <button onClick={() => { setLang('pt'); localStorage.setItem('language', 'pt'); }} className={`${lang === 'pt' ? 'opacity-100' : 'opacity-40'} transition-opacity`}>
+                    <img src="https://flagcdn.com/w40/br.png" className="w-5" alt="PT" />
+                  </button>
+                  <button onClick={() => { setLang('en'); localStorage.setItem('language', 'en'); }} className={`${lang === 'en' ? 'opacity-100' : 'opacity-40'} transition-opacity`}>
+                    <img src="https://flagcdn.com/w40/us.png" className="w-5" alt="EN" />
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* MODAL DE PESQUISA (Para Desktop e Mobile) */}
+      {isSearchOpen && (
+        <div className="fixed inset-0 bg-white/98 backdrop-blur-md z-[100] flex flex-col p-4 sm:p-8 md:p-20 animate-fade-in overflow-y-auto">
+          <div className="flex justify-end w-full">
+            <button
+              onClick={() => { setIsSearchOpen(false); setSearchQuery(''); }}
+              className="text-gray-900 hover:text-gray-600 transition-colors flex items-center gap-2 tracking-widest text-xs font-bold uppercase"
+            >
+              {lang === 'pt' ? 'Fechar' : 'Close'} <X size={20} />
+            </button>
+          </div>
+          <div className="max-w-4xl w-full mx-auto mt-10 md:mt-24">
+            <input
+              type="text"
+              autoFocus
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder={lang === 'pt' ? 'O que você procura? (Ex: Apartamentos, Campo...)' : 'What are you looking for? (e.g., Apartments, Country...)'}
+              className="w-full bg-transparent border-b border-gray-900 py-3 md:py-4 text-xl sm:text-2xl md:text-4xl font-extralight tracking-wide outline-none placeholder:text-gray-300 font-garamond"
+            />
+            <div className="mt-8 md:mt-12">
+              <p className="text-[11px] tracking-[0.3em] font-bold uppercase text-gray-400 mb-6">
+                {lang === 'pt' ? 'Categorias Sugeridas' : 'Suggested Categories'}
+              </p>
+              <div className="flex flex-col gap-4">
+                {filteredProperties.length > 0 ? (
+                  filteredProperties.map((item, idx) => (
+                    <Link
+                      key={idx}
+                      to={item.path}
+                      onClick={() => { setIsSearchOpen(false); setSearchQuery(''); }}
+                      className="text-lg md:text-2xl font-qlassy text-gray-800 hover:text-black hover:translate-x-2 transition-all flex items-center justify-between group py-2 border-b border-gray-100"
+                    >
+                      <span>{item.title}</span>
+                      <ArrowUpRight size={18} className="opacity-0 group-hover:opacity-100 transition-opacity" />
+                    </Link>
+                  ))
+                ) : (
+                  <p className="text-gray-500 font-garamond italic text-base md:text-lg">
+                    {lang === 'pt' ? 'Nenhuma categoria encontrada para sua busca.' : 'No categories found for your search.'}
+                  </p>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </header>
+  );
+};
+
+// --- COMPONENTE FOOTER ---
+const Footer = ({ lang }: { lang: 'pt' | 'en' }) => {
+  const t = translations[lang];
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const [emailInput, setEmailInput] = useState('');
+  const [isNewsletterOpen, setIsNewsletterOpen] = useState(false);
+  const [formData, setFormData] = useState({ name: '', phone: '' });
+  const [isSending, setIsSending] = useState(false);
+
+  const FORMSPREE_ID = "";
+  const USE_AUTOMATIC_SEND = false;
+
+  const handleNavigation = (e: React.MouseEvent, path: string) => {
+    if (path === "/") {
+      if (location.pathname === "/") {
+        e.preventDefault();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    } else if (path === "#sobre") {
+      e.preventDefault();
+      if (location.pathname !== "/") {
+        navigate("/", { state: { scrollToAbout: true } });
+      } else {
+        document.getElementById('sobre')?.scrollIntoView({ behavior: 'smooth' });
+      }
+    } else if (path === "#contato") {
+      e.preventDefault();
+      if (location.pathname !== "/") {
+        navigate("/", { state: { scrollToContact: true } });
+      } else {
+        document.getElementById('contato')?.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+  };
+
+  const handleOpenNewsletter = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (emailInput.trim() !== '') {
+      setIsNewsletterOpen(true);
+    }
+  };
+
+  const handleSendForm = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSending(true);
+
+    try {
+      // Usando a API do Web3Forms com a sua chave recém-gerada
+      const response = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json'
+        },
+        body: JSON.stringify({
+          access_key: '33855d52-3709-489d-aac6-fd0e32d1c9a3',
+          subject: lang === 'pt' ? 'Nova Assinatura - Revista Digital' : 'New Subscription - Digital Magazine',
+          from_name: 'A Propriedade - Site',
+          name: formData.name,
+          email: emailInput,
+          phone: formData.phone,
+          message: 'Novo pedido de assinatura da revista digital através do rodapé do site.'
+        })
+      });
+
+      if (response.ok) {
+        alert(lang === 'pt' ? 'Inscrição realizada com sucesso!' : 'Subscription successful!');
+      } else {
+        alert(lang === 'pt' ? 'Ocorreu um erro. Tente novamente.' : 'An error occurred. Please try again.');
+      }
+    } catch (error) {
+      alert(lang === 'pt' ? 'Erro de conexão.' : 'Connection error.');
+    } finally {
+      setIsSending(false);
+      setIsNewsletterOpen(false);
+      setEmailInput('');
+      setFormData({ name: '', phone: '' });
+    }
+  };
+
+  return (
+    <footer id="contato" className="bg-white pt-12 md:pt-16 pb-8 border-t border-gray-100 relative z-40">
+      <div className="container mx-auto px-4 sm:px-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-12 mb-12 md:mb-16">
+
+          <div className="flex flex-col items-start lg:pr-4 ">
+            <img src="/logo/title3.png" alt="A Propriedade" className="h-7 md:h-8 mb-4" />
+            <p className="text-gray-500 text-sm leading-relaxed font-garamond">
+              {lang === 'pt'
+                ? 'Propriedades extraordinárias, unindo arquitetura contemporânea e design de interiores em um só destino.'
+                : 'Exclusive curation of the most extraordinary properties, uniting contemporary architecture and interior design in one destination.'}
+            </p>
+          </div>
+
+          <div>
+            <h4 className="text-[14px] md:text-[15px] font-bold text-black uppercase mb-4">Explore</h4>
+            <ul className="space-y-2.5">
+              {t.nav.map((item, i) => {
+                const path = menuRoutes[item] || "#";
+                return (
+                  <li key={i} className="group w-fit">
+                    <Link
+                      to={path.startsWith('#') ? "/" : path}
+                      onClick={(e) => handleNavigation(e, path)}
+                      className="relative text-gray-500 hover:text-black transition-colors text-xs font-bold tracking-[0.1em] uppercase block pb-1"
+                    >
+                      {item}
+                      <span className="absolute left-0 bottom-0 w-0 h-[1.5px] bg-black transition-all duration-500 ease-in-out group-hover:w-full"></span>
+                    </Link>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+
+          <div>
+            <h4 className="text-[14px] md:text-[15px] font-bold text-black uppercase mb-4">
+              {lang === 'pt' ? 'Contato' : 'Contact'}
+            </h4>
+            <ul className="space-y-2.5 text-gray-500 text-sm font-garamond-raw">
+              <li className="group w-fit">
+                <a
+                  href="mailto:andre@apropriedade.com.br"
+                  className="relative text-gray-500 hover:text-black transition-colors block pb-1"
+                >
+                  <Mail size={18} strokeWidth={1.5} stroke="currentColor" />
+                  <span className="absolute left-0 bottom-0 w-0 h-[1.5px] bg-black transition-all duration-500 ease-in-out group-hover:w-full"></span>
+                </a>
+              </li>
+
+              <li className="group w-fit">
+                <a
+                  href={whatsappUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="relative text-gray-500 hover:text-black transition-colors block pb-1"
+                >
+                  <MessageCircle size={18} strokeWidth={1.5} stroke="currentColor" />
+                  <span className="absolute left-0 bottom-0 w-0 h-[1.5px] bg-black transition-all duration-500 ease-in-out group-hover:w-full"></span>
+                </a>
+              </li>
+
+              <li className="group w-fit">
+                <a
+                  href={instagramUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="relative text-gray-500 hover:text-black transition-colors block pb-1"
+                >
+                  <Instagram size={18} strokeWidth={1.5} stroke="currentColor" />
+                  <span className="absolute left-0 bottom-0 w-0 h-[1.5px] bg-black transition-all duration-500 ease-in-out group-hover:w-full"></span>
+                </a>
+              </li>
+            </ul>
+          </div>
+
+          <div>
+            <h4 className="text-[14px] md:text-[15px] font-bold text-black uppercase mb-4">Newsletter</h4>
+            <p className="text-gray-500 text-sm mb-4 font-garamond">
+              {lang === 'pt'
+                ? 'Assine para receber nossa revista digital e lançamentos em primeira mão.'
+                : 'Subscribe to receive our digital magazine and first-hand releases.'}
+            </p>
+            <form onSubmit={handleOpenNewsletter} className="flex items-center border-b border-gray-300 focus-within:border-black transition-colors pb-1 group">
+              <input
+                type="email"
+                required
+                value={emailInput}
+                onChange={(e) => setEmailInput(e.target.value)}
+                placeholder={lang === 'pt' ? 'Seu endereço de e-mail' : 'Your email address'}
+                className="w-full outline-none text-xs font-garamond text-gray-800 bg-transparent placeholder:text-gray-400"
+              />
+              <button type="submit" className="text-gray-400 group-hover:text-black transition-colors p-1">
+                <ArrowUpRight size={16} />
+              </button>
+            </form>
+          </div>
+        </div>
+
+        <div className="border-t border-gray-200 pt-6 flex flex-col sm:flex-row justify-between items-center gap-4 text-center sm:text-left">
+          <p className="text-[9px] text-gray-400 uppercase font-bold ">
+            {t.footer.rights}
+          </p>
+          <div className="flex gap-4 text-[10px] tracking-[0.2em] text-gray-400 uppercase font-bold">
+            <Link to="/politica-de-privacidade" className="hover:text-black transition-colors">
+              {lang === 'pt' ? 'Política de Privacidade' : 'Privacy Policy'}
+            </Link>
+            <Link to="/termos-de-uso" className="hover:text-black transition-colors">
+              {lang === 'pt' ? 'Termos de Uso' : 'Terms of Use'}
+            </Link>
+          </div>
+        </div>
+      </div>
+
+      {/* MODAL DO FORMULÁRIO */}
+      {isNewsletterOpen && (
+        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[110] flex items-center justify-center p-4">
+          <div className="bg-white max-w-md w-full p-6 md:p-8 rounded-none shadow-2xl relative animate-fade-in">
+            <button
+              onClick={() => setIsNewsletterOpen(false)}
+              className="absolute top-4 right-4 text-gray-500 hover:text-black transition-colors"
+            >
+              <X size={20} />
+            </button>
+            <h3 className="text-lg md:text-xl font-qlassy text-black mb-2 uppercase tracking-wide">
+              {lang === 'pt' ? 'Receber Revista Digital' : 'Receive Digital Magazine'}
+            </h3>
+            <p className="text-gray-500 font-garamond text-sm mb-6 leading-relaxed">
+              {lang === 'pt'
+                ? 'Por favor, preencha seus dados abaixo para completar sua assinatura.'
+                : 'Please fill in your details below to complete your subscription.'}
+            </p>
+            <form onSubmit={handleSendForm} className="space-y-4 md:space-y-5">
+              <div>
+                <label className="block text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-1">{lang === 'pt' ? 'Nome Completo' : 'Full Name'}</label>
+                <input
+                  type="text"
+                  required
+                  value={formData.name}
+                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                  className="w-full border-b border-gray-300 py-2 text-sm font-garamond text-gray-800 focus:border-black outline-none transition-colors bg-transparent"
+                />
+              </div>
+              <div>
+                <label className="block text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-1">E-mail</label>
+                <input
+                  type="email"
+                  disabled
+                  value={emailInput}
+                  className="w-full border-b border-gray-200 py-2 text-sm font-garamond text-gray-400 outline-none bg-transparent cursor-not-allowed"
+                />
+              </div>
+              <div>
+                <label className="block text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-1">{lang === 'pt' ? 'Telefone / WhatsApp' : 'Phone / WhatsApp'}</label>
+                <input
+                  type="tel"
+                  required
+                  value={formData.phone}
+                  onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                  placeholder="(00) 00000-0000"
+                  className="w-full border-b border-gray-300 py-2 text-sm font-garamond text-gray-800 focus:border-black outline-none transition-colors bg-transparent"
+                />
+              </div>
+              <button
+                type="submit"
+                disabled={isSending}
+                className="w-full mt-4 bg-black text-white py-3 text-[11px] font-bold uppercase tracking-widest hover:bg-gray-900 transition-colors disabled:bg-gray-400"
+              >
+                {isSending ? (lang === 'pt' ? 'ENVIANDO...' : 'SENDING...') : (lang === 'pt' ? 'CONCLUIR E ENVIAR' : 'COMPLETE AND SEND')}
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
+    </footer>
+  );
+};
+
+// --- COMPONENTES AUXILIARES ---
+const Counter = ({ end }: { end: number }) => {
+  const [count, setCount] = useState(0);
+  const [isVisible, setIsVisible] = useState(false);
+  const ref = useRef(null);
+  useEffect(() => {
+    const obs = new IntersectionObserver(([e]) => e.isIntersecting && setIsVisible(true));
+    if (ref.current) obs.observe(ref.current);
+    return () => obs.disconnect();
+  }, []);
+  useEffect(() => {
+    if (!isVisible) return;
+    let start = 0;
+    const timer = setInterval(() => {
+      start += end / 100;
+      if (start >= end) { setCount(end); clearInterval(timer); }
+      else setCount(Math.floor(start));
+    }, 20);
+    return () => clearInterval(timer);
+  }, [isVisible, end]);
+  return <span ref={ref}>{count}</span>;
+};
+
+const Reveal = ({ children, className = "", delay = 0 }: { children: React.ReactNode, className?: string, delay?: number }) => {
+  const [isVisible, setIsVisible] = useState(false);
+  const ref = useRef(null);
+  useEffect(() => {
+    const obs = new IntersectionObserver(([e]) => { if (e.isIntersecting) setIsVisible(true); }, { threshold: 0.1 });
+    if (ref.current) obs.observe(ref.current);
+    return () => obs.disconnect();
+  }, []);
+  return (
+    <div ref={ref} style={{ transitionDelay: `${delay}ms` }} className={`${className} transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
+      {children}
+    </div>
+  );
+};
+
+// --- HERO INTEGRADO ---
+const IntegratedHero = ({ lang }: { lang: 'pt' | 'en' }) => {
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const t = translations[lang];
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentIndex((prev) => (prev + 1) % heroContent.length);
+    }, 6000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const getAnimationClass = (index: number) => {
+    const internalIdx = index % 4;
+    if (internalIdx === 0) return 'animate-local-zoom-in';
+    if (internalIdx === 1) return 'animate-local-zoom-out';
+    if (internalIdx === 2) return 'animate-local-pan-left';
+    return 'animate-local-pan-right';
+  };
+
+  return (
+    <section className="relative h-[75vh] md:h-[85vh] w-full overflow-hidden bg-black">
+      {heroContent.map((item, index) => {
+        const isCurrent = index === currentIndex;
+        const titleList = t.hero.titles;
+        const currentTitle = titleList[index % titleList.length];
+
+        return (
+          <div
+            key={index}
+            className={`absolute inset-0 transition-opacity duration-[2500ms] ease-in-out ${isCurrent ? 'opacity-100 z-10' : 'opacity-0 z-0'
+              }`}
+          >
+            <img
+              src={item.url}
+              className={`w-full h-full object-cover opacity-65 ${getAnimationClass(index)}`}
+              alt="Refúgio Exclusivo"
+              style={{ animationDuration: '6s' }} /* 👈 ADICIONE ESSA LINHA AQUI */
+            />
+
+            <div className={`absolute inset-0 flex flex-col justify-end p-6 sm:p-10 md:p-16 z-20 transition-opacity duration-1000 ${isCurrent ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
+              {isCurrent && (
+                <Reveal key={`text-${currentIndex}-${lang}`} delay={400}>
+                  <p className="text-white text-[10px] sm:text-[11px] tracking-[0.4em] uppercase font-bold mb-2 opacity-80 font-heading">
+                    {t.hero.label}
+                  </p>
+                  <h2 className="text-white text-2xl sm:text-4xl md:text-5xl font-extralight max-w-2xl leading-tight mb-4 md:mb-6 font-qlassy uppercase">
+                    {currentTitle}
+                  </h2>
+                  <button className="border border-white text-white px-5 py-2 rounded-full text-[10px] sm:text-[11px] tracking-widest uppercase hover:bg-white hover:text-black transition-all duration-300">
+                    {lang === 'pt' ? 'SAIBA MAIS' : 'LEARN MORE'}
+                  </button>
+                </Reveal>
+              )}
+            </div>
+          </div>
+        );
+      })}
+      <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-black/20 pointer-events-none z-15"></div>
+    </section>
+  );
+};
+
+// --- PAGINA PRINCIPAL (HOMEPAGE) ---
+const HomePage = ({ lang }: { lang: 'pt' | 'en' }) => {
+  const t = translations[lang];
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.pathname === "/") {
+      if (location.state?.scrollToAbout) {
+        setTimeout(() => {
+          document.getElementById('sobre')?.scrollIntoView({ behavior: 'smooth' });
+          window.history.replaceState({}, document.title);
+        }, 100);
+      } else if (location.state?.scrollToContact) {
+        setTimeout(() => {
+          document.getElementById('contato')?.scrollIntoView({ behavior: 'smooth' });
+          window.history.replaceState({}, document.title);
+        }, 100);
+      }
+    }
+  }, [location]);
+
+  return (
+    <div className="min-h-screen bg-white selection:bg-[#49BFEA] selection:text-white">
+      <IntegratedHero lang={lang} />
+
+      <a
+        href={whatsappUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="fixed bottom-5 right-5 sm:bottom-6 sm:right-6 z-50 flex items-center justify-center gap-2.5 w-11 h-11 sm:w-auto sm:h-auto sm:px-4 sm:py-2.5 border border-black/10 bg-white/50 backdrop-blur-md rounded-full shadow-[0_4px_20px_rgba(0,0,0,0.06)] group hover:bg-black/50 hover:border-black/50 transition-all duration-300"
+      >
+        <MessageCircle
+          size={18}
+          strokeWidth={1.5}
+          className="text-black group-hover:text-white transition-colors"
+        />
+        <span className="hidden sm:inline text-black text-[11px] font-medium tracking-[0.2em] uppercase group-hover:text-white transition-colors">
+          {t.whatsappCTA || 'FALE CONOSCO'}
+        </span>
+      </a>
+
+      <section id="sobre" className="py-16 md:py-20 bg-[#f8f8f8] w-full px-4 sm:px-8 md:px-12 lg:px-20 overflow-hidden">
+        <div className="w-full">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-stretch mb-16 md:mb-24">
+            <div className="w-full h-full min-h-[350px] sm:min-h-[400px] lg:min-h-[60vh]">
+              <Reveal className="h-full">
+                <div className="relative w-full h-full">
+                  <img
+                    src="/sobre/sobre-nos.jpg"
+                    className="relative z-10 w-full h-full object-cover rounded-none shadow-xl"
+                    alt="Sobre André Rodrigues"
+                  />
+                </div>
+              </Reveal>
+            </div>
+
+            <div className="w-full space-y-5 md:space-y-6 flex flex-col justify-center lg:pr-6">
+              <Reveal delay={200}>
+                <h3 className="text-2xl md:text-3xl font-qlassy text-[#1A1A1A]">
+                  {t.about.title}
+                </h3>
+              </Reveal>
+
+              <Reveal delay={400}>
+                <div className="text-justify space-y-4 text-sm md:text-base text-gray-600 font-garamond leading-relaxed">
+                  {lang === 'pt' ? (
+                    <>
+                      <p>A Propriedade foi criada com a ideia de ser um destino definitivo para imóveis de luxo, de maneira simplificada, tornando a experiência do cliente dinâmica e inesquecível. Apesar de parecer uma empresa jovem, criada em 2022, nosso founder e head da operação, André Rodrigues, já atuava como corretor de imóveis desde 2014 no mercado de alto padrão de lançamento e prontos, na renomada imobiliária Lopes, onde desenvolveu experiências e ferramentas que moldaram sua visão desse setor tão exigente, que demanda muita efetividade, conhecimento e organização.</p>
+                      <p>O nome foi batizado no sentido literal da palavra - A Propriedade, com o intuito de considerar cada propriedade como única, no singular, de modo a desenvolver um trabalho especial e atraente que se destaque dos demais imóveis do mercado. Para isso, A Propriedade aplica técnicas e posicionamentos que dão ao imóvel alta visibilidade, através da inclusão de fotografias profissionais de alta qualidade de resolução, e filmes com técnicas cinematográficas. Assim, nossos clientes têm a possibilidade de uma imersão completa antes mesmo de visitarem o imóvel desejado.</p>
+                      <p>Estamos presentes todos os dias da semana, sempre prontos para tornar a experiência do cliente inesquecível. Entendemos a mentalidade do cliente de alta renda e sabemos onde e como querem estar. Seja nas grandes cidades, no interior, no campo ou no litoral, o que há de mais recente em propriedades de luxo, selecionadas com critérios que valorizam a aquisição sempre com muita ética, cumprimento dos deveres legais e transparência.</p>
+                    </>
+                  ) : (
+                    <>
+                      <p>A Propriedade was created to be a definitive destination for luxury real estate, simplifying the process and making the client experience dynamic and unforgettable. Although founded in 2022, our founder and operation head, André Rodrigues, has been active as a real estate broker since 2014 in the high-end market for new and ready-to-move-in properties at the renowned Lopes real estate agency, where he developed experiences and tools that shaped his vision of this demanding sector, which requires great effectiveness, knowledge, and organization.</p>
+                      <p>The name was chosen in the literal sense of the word - A Propriedade (The Property), with the aim of considering each property as unique, in the singular, in order to develop special and attractive work that stands out from other properties on the market. To achieve this, A Propriedade applies techniques and positioning that give the property high visibility, through the inclusion of high-resolution professional photography and films with cinematographic techniques. Thus, our clients have the possibility of complete immersion even before visiting the desired property.</p>
+                      <p>We are present every day of the week, always ready to make the client's experience unforgettable. We understand the mindset of high-income clients and know where and how they want to be. Whether in major cities, the countryside, or the coast, we select the latest in luxury properties with criteria that always value acquisition with great ethics, compliance with legal duties, and transparency.</p>
+                    </>
+                  )}
+                </div>
+              </Reveal>
+            </div>
+          </div>
+
+          <div className="pt-12 border-t border-black/10 w-full">
+            <Reveal delay={500} className="grid grid-cols-3 gap-6 text-center">
+              <div>
+                <p className="font-qlassy text-4xl md:text-5xl leading-none tracking-tighter">+{/* */} <Counter end={12} /></p>
+                <p className="text-[14px] tracking-widest uppercase font-bold text-gray-500 mt-3">{t.about.stats[0]}</p>
+              </div>
+              <div>
+                <p className="font-qlassy text-4xl md:text-5xl leading-none tracking-tighter" style={{ color: cyanBrand }}>
+                  +{/* */} <Counter end={30} />mi
+                </p>
+                <p className="text-[14px] tracking-widest uppercase font-bold text-gray-500 mt-3">{t.about.stats[1]}</p>
+              </div>
+              <div>
+                <p className="font-qlassy text-4xl md:text-5xl leading-none tracking-tighter"><Counter end={100} />%</p>
+                <p className="text-[14px] tracking-widest uppercase font-bold text-gray-500 mt-3">
+                  {lang === 'pt' ? 'Foco em Luxo' : 'Luxury Focus'}
+                </p>
+              </div>
+            </Reveal>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center w-full mb-24 pt-24">
+          <div className="w-full flex flex-col justify-center">
+            <Reveal className="space-y-6">
+              <h2 className="text-3xl md:text-4xl font-qlassy text-[#1A1A1A]/80 leading-[1.15] tracking-tight max-w-full">
+                {lang === 'pt' ? (
+                  <>A Propriedade Celebra Um Design Extraordinário Para Uma Comunidade Inspirada.</>
+                ) : (
+                  <>A Propriedade Celebrates Extraordinary Design For An Inspired Community.</>
+                )}
+              </h2>
+              <p className="text-base md:text-lg text-[#1A1A1A]/70 font-garamond max-w-xl leading-relaxed">
+                {lang === 'pt' ? (
+                  <>Promovendo o design autêntico por meio da publicação impressa A Propriedade, publicação digital, conteúdo em vídeo e canais de redes sociais, nossa missão é destacar e apoiar a comunidade local de design.</>
+                ) : (
+                  <>Promoting authentic design through A Propriedade print publication, digital publication, video content, and social media channels, our mission is to highlight and support the local design community.</>
+                )}
+              </p>
+            </Reveal>
+          </div>
+
+          <div className="w-full h-full min-h-[300px] lg:min-h-[50vh] flex items-center">
+            <Reveal delay={200} className="w-full h-full">
+              <img
+                src="/hero/2.jpg"
+                className="w-full h-full max-h-[60vh] object-cover rounded-none shadow-lg"
+                alt="A Propriedade Panorama"
+              />
+            </Reveal>
+          </div>
+        </div>
+      </section>
+
+      {/* O FOOTER AGORA ESTÁ AQUI DENTRO, DISPONÍVEL APENAS NA PÁGINA PRINCIPAL */}
+      <Footer lang={lang} />
+    </div>
+  );
+};
+
+// --- ROTEADOR PRINCIPAL (APP) ---
+export default function App() {
+  const [lang, setLang] = useState<'pt' | 'en'>((localStorage.getItem('language') as 'pt' | 'en') || 'pt');
+
+  return (
+    <Router>
+      <style dangerouslySetInnerHTML={{
+        __html: `
+          @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400..800;1,400..800&display=swap');
+          
+          @font-face { 
+            font-family: 'Qlassy'; 
+            src: url('/fonts/qlassy.ttf') format('truetype'); 
+            font-display: swap;
+          }
+          
+          @font-face { 
+            font-family: 'NeueHelvetica'; 
+            src: url('/fonts/helvetica-condensed.ttf') format('truetype'); 
+            font-display: swap;
+          }
+
+          @font-face { 
+            font-family: 'HeadingNow'; 
+            src: url('/fonts/HeadingNowTrial-43Book.ttf') format('truetype'); 
+            font-display: swap;
+          }
+
+          .font-qlassy { font-family: 'Qlassy', serif !important; }
+          .font-garamond { font-family: 'EB Garamond', serif !important; }
+          .font-garamond-raw { font-family: 'EB Garamond', serif !important; }
+
+          h1, h2, h3, .font-qlassy { 
+            font-family: 'Qlassy', serif !important; 
+          }
+
+          .container-sobre-texto p { 
+            font-family: 'EB Garamond', serif !important; 
+            font-size: 1.1rem !important; 
+            color: #555555 !important;
+            line-height: 1.65 !important;
+          }
+
+          nav a, button, a, .tracking-widest { 
+            font-family: 'HeadingNow', sans-serif !important; 
+          }
+
+          .font-garamond-raw, .font-garamond-raw a {
+            font-family: 'EB Garamond', serif !important;
+            text-transform: none !important;
+            letter-spacing: normal !important;
+          }
+
+          @keyframes localZoomIn {
+            0% { transform: scale(1.02); }
+            100% { transform: scale(1.10); }
+          }
+          .animate-local-zoom-in {
+            animation: localZoomIn 24s infinite alternate ease-in-out;
+          }
+
+          @keyframes localZoomOut {
+            0% { transform: scale(1.10); }
+            100% { transform: scale(1.02); }
+          }
+          .animate-local-zoom-out {
+            animation: localZoomOut 24s infinite alternate ease-in-out;
+          }
+
+          @keyframes localPanLeft {
+            0% { transform: scale(1.08) translateX(1%); }
+            100% { transform: scale(1.08) translateX(-1%); }
+          }
+          .animate-local-pan-left {
+            animation: localPanLeft 24s infinite alternate ease-in-out;
+          }
+
+          @keyframes localPanRight {
+            0% { transform: scale(1.08) translateX(-1%); }
+            100% { transform: scale(1.08) translateX(1%); }
+          }
+          .animate-local-pan-right {
+            animation: localPanRight 24s infinite alternate ease-in-out;
+          }
+
+          @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+          }
+          .animate-fade-in {
+            animation: fadeIn 0.3s ease-out forwards;
+          }
+        `}} />
+
+      {/* O Header continua aqui fora, logo, ele é exibido fixamente em todas as rotas */}
+      <Header lang={lang} setLang={setLang} />
+
+      <Routes>
+        <Route path="/" element={<HomePage lang={lang} />} />
+        <Route path="/magazinepage" element={<MagazinePage />} />
+        <Route path="/casadecampoemontanha" element={<CasadeCampoeMontanha />} />
+        <Route path="/casasurbanas" element={<CasasUrbanas />} />
+        <Route path="/casasdemontanha" element={<Montanha />} />
+        <Route path="/apartamentos" element={<Apartamentos />} />
+        <Route path="/comercialecorporativo" element={<ComercialECorporativo />} />
+
+        <Route path="/politica-de-privacidade" element={<PoliticaPrivacidade />} />
+        <Route path="/termos-de-uso" element={<TermosUso />} />
+      </Routes>
+    </Router>
+  );
+}

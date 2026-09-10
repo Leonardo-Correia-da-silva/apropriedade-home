@@ -1,0 +1,50 @@
+/* 1. As importações de fontes externas DEVEM vir primeiro */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap');
+
+/* Registro Manual da Heading Now */
+@font-face {
+  font-family: 'HeadingNow43';
+  src: url('/fonts/HeadingNow-43Book.woff2') format('woff2'); /* Certifique-se que o arquivo está em public/fonts/ */
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* 2. Importação do Tailwind */
+@import "tailwindcss";
+
+/* 3. Definições de tema */
+@theme {
+  /* Fontes Premium */
+  --font-serif: "Playfair Display", serif;
+  --font-sans: "Inter", sans-serif;
+  
+  /* ADICIONADO: Agora você pode usar 'font-heading' no seu HTML/React */
+  --font-heading: "HeadingNow43", sans-serif;
+
+  /* Animações Customizadas */
+  --animate-slow-zoom: slow-zoom 20s infinite alternate linear;
+  --animate-slide-up: slide-up 1s ease-out forwards;
+
+  @keyframes slow-zoom {
+    0% { transform: scale(1); }
+    100% { transform: scale(1.1); }
+  }
+
+  @keyframes slide-up {
+    0% { opacity: 0; transform: translateY(20px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+}
+
+/* 4. Estilos globais */
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background-color: #050505;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}

@@ -978,7 +978,7 @@ const IntegratedHero = ({ lang }: { lang: 'pt' | 'en' }) => {
                   <p className="text-white text-[11px] tracking-[0.4em] uppercase font-bold mb-2 opacity-80 font-heading">
                     {t.hero.label}
                   </p>
-                  <h2 className="text-white text-5xl font-extralight max-w-2xl leading-tight mb-4 md:mb-6 font-qlassy uppercase">
+                  <h2 className="text-white text-3xl sm:text-4xl md:text-5xl font-extralight max-w-2xl leading-tight mb-4 md:mb-6 font-qlassy uppercase">
                     {currentTitle}
                   </h2>
                   <button className="border border-white text-white px-5 py-2 rounded-full text-[11px] tracking-widest uppercase hover:bg-white hover:text-black transition-all duration-300">
@@ -1081,18 +1081,18 @@ const HomePage = ({ lang }: { lang: 'pt' | 'en' }) => {
           <div className="pt-12 border-t border-black/10 w-full">
             <Reveal delay={500} className="grid grid-cols-3 gap-6 text-center">
               <div>
-                <p className="font-qlassy text-5xl leading-none tracking-tighter">+{/* */} <Counter end={12} /></p>
-                <p className="text-[14px] tracking-widest uppercase font-bold text-gray-500 mt-3">{t.about.stats[0]}</p>
+                <p className="font-qlassy text-3xl sm:text-4xl md:text-5xl leading-none tracking-tighter">+{/* */} <Counter end={12} /></p>
+                <p className="text-[10px] sm:text-[12px] md:text-[14px] tracking-widest uppercase font-bold text-gray-500 mt-3">{t.about.stats[0]}</p>
               </div>
               <div>
-                <p className="font-qlassy text-5xl leading-none tracking-tighter" style={{ color: cyanBrand }}>
+                <p className="font-qlassy text-3xl sm:text-4xl md:text-5xl leading-none tracking-tighter" style={{ color: cyanBrand }}>
                   +{/* */} <Counter end={30} />mi
                 </p>
-                <p className="text-[14px] tracking-widest uppercase font-bold text-gray-500 mt-3">{t.about.stats[1]}</p>
+                <p className="text-[10px] sm:text-[12px] md:text-[14px] tracking-widest uppercase font-bold text-gray-500 mt-3">{t.about.stats[1]}</p>
               </div>
               <div>
-                <p className="font-qlassy text-5xl leading-none tracking-tighter"><Counter end={100} />%</p>
-                <p className="text-[14px] tracking-widest uppercase font-bold text-gray-500 mt-3">
+                <p className="font-qlassy text-3xl sm:text-4xl md:text-5xl leading-none tracking-tighter"><Counter end={100} />%</p>
+                <p className="text-[10px] sm:text-[12px] md:text-[14px] tracking-widest uppercase font-bold text-gray-500 mt-3">
                   {lang === 'pt' ? 'Foco em Luxo' : 'Luxury Focus'}
                 </p>
               </div>

@@ -27,8 +27,16 @@ const MagazinePage = () => {
   const cyanBrand = "#49BFEA";
 
   useEffect(() => {
-    const savedLang = localStorage.getItem('language') as 'pt' | 'en';
-    if (savedLang) setLang(savedLang);
+    const checkLang = () => {
+      const savedLang = localStorage.getItem('language') as 'pt' | 'en';
+      if (savedLang) {
+        setLang((prevLang) => (prevLang !== savedLang ? savedLang : prevLang));
+      }
+    };
+    checkLang();
+    const langInterval = setInterval(checkLang, 300);
+    window.addEventListener('storage', checkLang);
+    window.addEventListener('languageChange', checkLang);
 
     const handleResize = () => {
       const w = window.innerWidth;
@@ -65,7 +73,12 @@ const MagazinePage = () => {
 
     handleResize();
     window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+    return () => {
+      clearInterval(langInterval);
+      window.removeEventListener('storage', checkLang);
+      window.removeEventListener('languageChange', checkLang);
+      window.removeEventListener('resize', handleResize);
+    };
   }, []);
 
   const t = magazineTranslations[lang];
@@ -208,7 +221,7 @@ const MagazinePage = () => {
           />
         </div>
 
-        <p className="font-helvetica text-black/30 text-[7px] md:text-[8px] tracking-[0.4em] font-bold text-center">
+        <p className="font-helvetica text-black/30 text-[8px] tracking-[0.4em] font-bold text-center">
           {t.instruction}
         </p>
       </footer>

@@ -1,10 +1,12 @@
 import React, { useEffect, useState, memo } from 'react';
-import { 
+import { useLocation } from 'react-router-dom';
+import {
   ArrowLeft, 
   MapPin, 
   BedDouble,
   Bath,
   Maximize,
+  Square,
   ArrowUpRight,
   Car,
   ChevronLeft,
@@ -31,6 +33,7 @@ interface PropertyListItem {
   };
   description?: string;
   descriptionEn?: string;
+  sold?: boolean;
 }
 
 // Objeto de tradução para elementos da interface (UI)
@@ -41,7 +44,8 @@ const translations = {
     details: "VER DETALHES",
     value: "Valor",
     overview: "Visão Geral",
-    features: "Características"
+    features: "Características",
+    sold: "VENDIDO"
   },
   en: {
     segmentTitle: "Country & Mountain Houses",
@@ -49,7 +53,8 @@ const translations = {
     details: "VIEW DETAILS",
     value: "Value",
     overview: "Overview",
-    features: "Features"
+    features: "Features",
+    sold: "SOLD"
   }
 };
 
@@ -81,6 +86,11 @@ const StyleInjector = memo(() => (
       line-height: 1.65 !important;
       text-align: justify;
     }
+
+    .sold-ribbon-wrapper { position: absolute; top: 0; left: 0; width: 140px; height: 140px; overflow: hidden; z-index: 40; pointer-events: none; }
+    .sold-ribbon { position: absolute; top: 28px; left: -38px; width: 180px; transform: rotate(-45deg); background: #1a1a1a; color: #fff; text-align: center; padding: 6px 0; font-family: 'NeueHelvetica', sans-serif; font-size: 11px; font-weight: bold; letter-spacing: 0.2em; box-shadow: 0 2px 8px rgba(0,0,0,0.25); }
+    .sold-badge { position: absolute; top: 24px; right: 24px; z-index: 40; background: #1a1a1a; color: #fff; font-family: 'NeueHelvetica', sans-serif; font-size: 12px; font-weight: bold; letter-spacing: 0.2em; padding: 10px 18px; box-shadow: 0 2px 8px rgba(0,0,0,0.25); pointer-events: none; }
+    @media (min-width: 768px) { .sold-badge { top: 32px; right: 48px; } }
 
     .animate-fadeIn {
       animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
@@ -186,6 +196,7 @@ export default function CasadeCampoeMontanha() {
       titleEn: "Mountain Refuge",
       location: "Nazaré Paulista, SP",
       price: "R$ 2.950.000",
+      sold: true,
       images: [
         "/categorias/casas_montanha/nazare-paulista/5.jpg",
         "/categorias/casas_montanha/nazare-paulista/14.jpg",
@@ -200,7 +211,7 @@ export default function CasadeCampoeMontanha() {
       specs: { beds: 6, baths: 6, cars: 4, totalArea: "55.000m²", builtArea: "450m²" },
      description: "O sítio, com cerca de 55 mil m², fica localizado no alto de uma montanha isolada, que proporciona um estilo de vida que traz muita qualidade de vida, desapego da agitação da cidade e um encontro com a natureza abundante em árvores floridas, paisagens de tirar o fôlego e muita privacidade.\n\nA vista do solarium da piscina contempla algumas cidades a dezenas de quilômetros de distância. Dali, é possível observar parte do mundo em silêncio, no aconchego de uma casa de campo que reúne características de uma mini fazenda. Pomar com centenas de árvores, lago, casa de caseiro habitada, galinheiro, horta, estufa, espaço gourmet externo, sauna e piscina com raia. A casa principal é a alma da propriedade: com arquitetura brasileira, rica em iluminação e ventilação naturais, é o verdadeiro símbolo de casa de montanha. Lareira central para noites frias, pé-direito duplo com forro de madeira no teto, diversos ambientes integrados, cozinha com balcão americano, despensa, sala de almoço, sala de jantar com fogão à lenha e paredes de vidro com vistas do jardim e do horizonte infinito.\n\nNo andar superior, há um escritório independente e a suíte principal, que conta com closet, banheiro e varanda com vistas incomparáveis. Ao todo, são quatro suítes, sendo três no piso térreo. É a propriedade ideal para quem quer sair do ritmo acelerado da cidade e da vida moderna, para um refúgio seguro, longe do ruído da cidade grande e perto da sinfonia da mãe natureza.",
 
-descriptionEn: "The estate, spanning approximately 55,000 m², is located atop an isolated mountain, offering a lifestyle centered on well-being, distance from the hustle and bustle of the city, and a deep connection with nature, surrounded by flowering trees, breathtaking landscapes, and complete privacy.\n\nThe pool solarium offers panoramic views of several cities dozens of kilometers away. From there, one can quietly observe the world while enjoying the comfort of a country house that combines the charm and features of a private mini farm. The property includes an orchard with hundreds of trees, a lake, an occupied caretaker's house, chicken coop, vegetable garden, greenhouse, outdoor gourmet area, sauna, and a swimming pool with a dedicated lap lane. he main house is the soul of the property. Featuring Brazilian architecture, abundant natural light and ventilation, it is a true expression of a mountain home. A central fireplace provides warmth on cold nights, while the double-height ceiling with a wooden finish, integrated living spaces, American-style kitchen counter, pantry, breakfast room, dining room with a wood-burning stove, and floor-to-ceiling glass walls create a seamless connection with the garden and the endless horizon.\n\n Upstairs, there is an independent home office and the master suite, complete with a walk-in closet, bathroom, and balcony offering unparalleled views. In total, the property features four suites, three of them located on the ground floor. It is the ideal property for those seeking to escape the fast-paced rhythm of the city and modern life, offering a safe and peaceful retreat away from the noise of the big city and close to the symphony of nature."
+descriptionEn: "The estate, spanning approximately 55,000 m², is located atop an isolated mountain, offering a lifestyle centered on well-being, distance from the hustle and bustle of the city, and a deep connection with nature, surrounded by flowering trees, breathtaking landscapes, and complete privacy.\n\nThe pool solarium offers panoramic views of several cities dozens of kilometers away. From there, one can quietly observe the world while enjoying the comfort of a country house that combines the charm and features of a private mini farm. The property includes an orchard with hundreds of trees, a lake, an occupied caretaker's house, chicken coop, vegetable garden, greenhouse, outdoor gourmet area, sauna, and a swimming pool with a dedicated lap lane. The main house is the soul of the property. Featuring Brazilian architecture, abundant natural light and ventilation, it is a true expression of a mountain home. A central fireplace provides warmth on cold nights, while the double-height ceiling with a wooden finish, integrated living spaces, American-style kitchen counter, pantry, breakfast room, dining room with a wood-burning stove, and floor-to-ceiling glass walls create a seamless connection with the garden and the endless horizon.\n\n Upstairs, there is an independent home office and the master suite, complete with a walk-in closet, bathroom, and balcony offering unparalleled views. In total, the property features four suites, three of them located on the ground floor. It is the ideal property for those seeking to escape the fast-paced rhythm of the city and modern life, offering a safe and peaceful retreat away from the noise of the big city and close to the symphony of nature."
     },
     {
       id: 2,
@@ -276,6 +287,16 @@ descriptionEn: "The estate, spanning approximately 55,000 m², is located atop a
     window.scrollTo(0, 0);
   };
 
+  const routerLocation = useLocation();
+  useEffect(() => {
+    const openId = (routerLocation.state as { openId?: number } | null)?.openId;
+    if (openId) {
+      const match = properties.find((p) => p.id === openId);
+      if (match) handleOpenDetails(match);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [routerLocation.state]);
+
   const scrollToTop = () => {
     window.scrollTo({
       top: 0,
@@ -304,15 +325,18 @@ descriptionEn: "The estate, spanning approximately 55,000 m², is located atop a
 
           {/* Imagem de Capa em Tela Cheia */}
           <div className="w-full h-[80vh] md:h-screen relative bg-gray-900">
-            <img 
+            {selectedProperty.sold && (
+              <div className="sold-badge">{t.sold}</div>
+            )}
+            <img
               src={selectedProperty.images[0]} 
               alt={lang === 'en' && selectedProperty.titleEn ? selectedProperty.titleEn : selectedProperty.title} 
               className="w-full h-full object-cover opacity-95"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/10" />
             <div className="absolute bottom-12 md:bottom-24 left-6 md:left-16 right-6 text-white max-w-4xl">
-              <span className="nav-label text-[10px] md:text-[11px] tracking-[0.25em] text-white/70 block mb-2 md:mb-3">{selectedProperty.location}</span>
-              <h1 className="text-3xl md:text-6xl font-qlassy uppercase tracking-tight leading-none mb-4">
+              <span className="nav-label text-[11px] tracking-[0.25em] text-white/70 block mb-2 md:mb-3">{selectedProperty.location}</span>
+              <h1 className="text-3xl sm:text-4xl md:text-6xl font-qlassy uppercase tracking-tight leading-none mb-4">
                 {lang === 'en' && selectedProperty.titleEn ? selectedProperty.titleEn : selectedProperty.title}
               </h1>
             </div>
@@ -324,8 +348,12 @@ descriptionEn: "The estate, spanning approximately 55,000 m², is located atop a
             <div className="lg:col-span-7 space-y-16 md:space-y-24">
               <div className="space-y-4 md:space-y-6">
                 <h2 className="text-xs font-bold tracking-[0.2em] uppercase text-gray-400 font-helvetica">{t.overview}</h2>
-                <div className="editorial-description">
-                  {lang === 'en' && selectedProperty.descriptionEn ? selectedProperty.descriptionEn : selectedProperty.description}
+                <div className="editorial-description space-y-4">
+                  {(lang === 'en' && selectedProperty.descriptionEn ? selectedProperty.descriptionEn : selectedProperty.description)
+                    ?.split('\n\n')
+                    .map((paragraph, index) => (
+                      <p key={index}>{paragraph}</p>
+                    ))}
                 </div>
               </div>
 
@@ -354,7 +382,7 @@ descriptionEn: "The estate, spanning approximately 55,000 m², is located atop a
               <div className="lg:sticky lg:top-32 space-y-8 md:space-y-10 border-t lg:border-t-0 border-gray-100 pt-10 lg:pt-0">
                 <div>
                   <span className="nav-label text-[10px] text-gray-400 block mb-1 md:mb-2">{t.value}</span>
-                  <div className="font-segoe font-light text-3xl md:text-4xl text-gray-900 tracking-tight">
+                  <div className="font-segoe font-light text-4xl text-gray-900 tracking-tight">
                     {selectedProperty.price}
                   </div>
                 </div>
@@ -367,7 +395,7 @@ descriptionEn: "The estate, spanning approximately 55,000 m², is located atop a
                     <div className="flex items-center gap-4 py-2 border-b border-gray-50">
                       <span className="icon-tooltip-wrapper">
                         <BedDouble size={20} className="text-gray-400 stroke-[1.5]" />
-                        <span className="icon-tooltip">{lang === 'en' ? 'Bedrooms ' : 'Quartos'}</span>
+                        <span className="icon-tooltip">{lang === 'en' ? 'Bedrooms' : 'Quartos'}</span>
                       </span>
                       <div>
                         <span className="text-[10px] text-gray-400 block font-helvetica tracking-wider">
@@ -416,7 +444,7 @@ descriptionEn: "The estate, spanning approximately 55,000 m², is located atop a
                     </div>
                     <div className="flex items-center gap-4 py-2 border-b border-gray-50">
                       <span className="icon-tooltip-wrapper">
-                        <Maximize size={20} className="text-gray-400 stroke-[1.5]" />
+                        <Square size={20} className="text-gray-400 stroke-[1.5]" />
                         <span className="icon-tooltip">{lang === 'en' ? 'Total land area' : 'Área total do terreno'}</span>
                       </span>
                       <div>
@@ -438,7 +466,7 @@ descriptionEn: "The estate, spanning approximately 55,000 m², is located atop a
         <main className={`pt-16 pb-32 transition-all duration-1000 ${isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
           
           <div className="w-full px-8 md:px-16 mb-20 text-center">
-            <h1 className="text-3xl md:text-4xl font-qlassy mb-4 md:mb-6 uppercase tracking-tighter text-gray-700">
+            <h1 className="text-4xl font-qlassy mb-4 md:mb-6 uppercase tracking-tighter text-gray-700">
               {t.segmentTitle}
             </h1>
             <div className="w-12 h-[1px] bg-gray-300 mx-auto mt-6 md:mt-8"></div>
@@ -453,6 +481,11 @@ descriptionEn: "The estate, spanning approximately 55,000 m², is located atop a
                   <div key={item.id} className="group cursor-pointer" onClick={() => handleOpenDetails(item)}>
                     
                     <div className="relative overflow-hidden rounded-sm mb-6 w-full pt-[62.5%] bg-gray-50">
+                      {item.sold && (
+                        <div className="sold-ribbon-wrapper">
+                          <div className="sold-ribbon">{t.sold}</div>
+                        </div>
+                      )}
                       {item.images.map((imgSrc, idx) => (
                         <img 
                           key={idx}
@@ -549,7 +582,7 @@ descriptionEn: "The estate, spanning approximately 55,000 m², is located atop a
                       </div>
                       <div className="flex items-center gap-2">
                         <span className="icon-tooltip-wrapper">
-                          <Maximize size={18} className="text-gray-500" />
+                          <Square size={20} className="text-gray-400 stroke-[1.5]" />
                           <span className="icon-tooltip">{lang === 'en' ? 'Total land area' : 'Área total do terreno'}</span>
                         </span>
                         <span className="nav-label text-[10px] text-gray-500">{item.specs.totalArea}</span>
@@ -568,7 +601,7 @@ descriptionEn: "The estate, spanning approximately 55,000 m², is located atop a
         <button
           onClick={scrollToTop}
           className="fixed bottom-8 right-8 z-40 bg-white text-gray-800 w-12 h-12 rounded-none shadow-[0_4px_20px_rgba(0,0,0,0.08)] hover:scale-105 transition-all duration-300 flex items-center justify-center animate-fadeIn border border-gray-100"
-          aria-label="Voltar ao topo"
+          aria-label={lang === 'en' ? 'Back to top' : 'Voltar ao topo'}
         >
           <ArrowUp size={20} className="stroke-[1.5]" />
         </button>

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useOutletContext } from 'react-router-dom';
 
 const translations = {
@@ -52,16 +52,35 @@ interface PoliticaPrivacidadeProps {
 
 export default function PoliticaPrivacidade({ language }: PoliticaPrivacidadeProps) {
   const context = useOutletContext<any>();
-  
-  // Obtém o idioma reativo vindo do App.tsx (props ou outletContext)
-  const lang: 'pt' | 'en' = 
-    language || 
-    (typeof context === 'string' ? context : context?.language) || 
-    (localStorage.getItem('language') as 'pt' | 'en') || 
-    'pt';
+
+  // Obtém o idioma reativo vindo do App.tsx (props ou outletContext), com fallback dinâmico ao localStorage
+  const [lang, setLang] = useState<'pt' | 'en'>(
+    language ||
+    (typeof context === 'string' ? context : context?.language) ||
+    (localStorage.getItem('language') as 'pt' | 'en') ||
+    'pt'
+  );
 
   useEffect(() => {
+    const checkLang = () => {
+      const savedLang = localStorage.getItem('language') as 'pt' | 'en';
+      if (savedLang) {
+        setLang((prevLang) => (prevLang !== savedLang ? savedLang : prevLang));
+      }
+    };
+
+    checkLang();
     window.scrollTo(0, 0);
+
+    const langInterval = setInterval(checkLang, 300);
+    window.addEventListener('storage', checkLang);
+    window.addEventListener('languageChange', checkLang);
+
+    return () => {
+      clearInterval(langInterval);
+      window.removeEventListener('storage', checkLang);
+      window.removeEventListener('languageChange', checkLang);
+    };
   }, []);
 
   const t = translations[lang] || translations.pt;
@@ -79,10 +98,10 @@ export default function PoliticaPrivacidade({ language }: PoliticaPrivacidadePro
         <div className="absolute inset-0 bg-black/40"></div>
 
         <div className="relative z-10 text-center flex flex-col items-center px-4 animate-fadeIn">
-          <span className="text-[10px] md:text-xs font-bold uppercase tracking-[0.3em] text-white/90 mb-4 font-sans drop-shadow-md">
+          <span className="text-xs font-bold uppercase tracking-[0.3em] text-white/90 mb-4 font-sans drop-shadow-md">
             {t.tagline}
           </span>
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-qlassy uppercase tracking-widest text-white drop-shadow-lg">
+          <h1 className="text-6xl font-qlassy uppercase tracking-widest text-white drop-shadow-lg">
             {t.title}
           </h1>
         </div>
@@ -97,7 +116,7 @@ export default function PoliticaPrivacidade({ language }: PoliticaPrivacidadePro
           </p>
         </div>
         
-        <div className="space-y-8 font-garamond text-sm md:text-base leading-relaxed text-gray-700">
+        <div className="space-y-8 font-garamond text-base leading-relaxed text-gray-700">
           <p>{t.intro}</p>
 
           <section className="pt-2">

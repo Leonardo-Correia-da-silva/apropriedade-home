@@ -8,6 +8,17 @@ import {
   X,
   Menu,
   Mail,
+  Home,
+  Info,
+  Building2,
+  Newspaper,
+  ShieldCheck,
+  FileText,
+  MapPin,
+  BedDouble,
+  Bath,
+  Car,
+  CornerDownLeft,
 } from 'lucide-react';
 
 
@@ -20,6 +31,8 @@ import MagazinePage from './magazinepage';
 import ComercialECorporativo from './comercialecorporativo';
 import PoliticaPrivacidade from './PoliticaPrivacidade'; // Ajuste o caminho
 import TermosUso from './TermosUso'; // Ajuste o caminho
+import { searchProperties, searchPages, normalizeText } from './searchData';
+import type { SearchProperty, SearchPage } from './searchData';
 
 const translations = {
   'pt': {
@@ -53,7 +66,7 @@ const translations = {
     },
     propTitles: ["Country & Mountain Houses", "Urban Houses", "Apartments", "Land Plots", "Commercial & Corporate"],
     propPaths: ["/casadecampoemontanha", "/casasurbanas", "/apartamentos", "/casasdemontanha", "/comercialecorporativo"],
-    about: { title: "ABOUT US", stats: ["Years in Market", "in Sales", "Luxury Focus"] },
+    about: { title: "ABOUT US", stats: ["Years in the Market", "in Sales", "Luxury Focus"] },
     section: { find: "Find your next property", details: "VIEW DETAILS" },
     footer: { rights: "© 2026 A Propriedade - All rights reserved" },
     whatsappCTA: "CONTACT US"
@@ -129,10 +142,96 @@ const Header = ({ lang, setLang }: { lang: 'pt' | 'en'; setLang: (l: 'pt' | 'en'
     }
   };
 
-  const filteredProperties = t.propTitles.map((title, idx) => ({
-    title,
-    path: t.propPaths[idx]
-  })).filter(prop => prop.title.toLowerCase().includes(searchQuery.toLowerCase()));
+  const [activeResultIndex, setActiveResultIndex] = useState(0);
+  const normalizedQuery = normalizeText(searchQuery);
+  const queryWords = normalizedQuery.split(' ').filter(Boolean);
+
+  const matchedProperties: SearchProperty[] = queryWords.length
+    ? searchProperties.filter((p) => {
+        const haystack = normalizeText([
+          p.title, p.titleEn, p.location, p.price, p.categoryLabel, p.categoryLabelEn,
+          p.beds ? `${p.beds} quartos suites bedrooms suites` : '',
+          p.baths ? `${p.baths} banheiros bathrooms` : '',
+          p.cars ? `${p.cars} vagas garagem parking` : '',
+          p.sold ? 'vendido sold' : ''
+        ].join(' '));
+        return queryWords.every((word) => haystack.includes(word));
+      })
+    : [];
+
+  const matchedPages: SearchPage[] = queryWords.length
+    ? searchPages.filter((page) => {
+        const haystack = normalizeText([page.title, page.titleEn, page.subtitle, page.subtitleEn, page.keywords || ''].join(' '));
+        return queryWords.every((word) => haystack.includes(word));
+      })
+    : [];
+
+  const combinedResultsCount = matchedProperties.length + matchedPages.length;
+  const quickCategories = t.propTitles.map((title, idx) => ({ title, path: t.propPaths[idx] }));
+  const featuredProperties = searchProperties.filter((p) => !p.sold).slice(0, 3);
+
+  const goToPage = (path: string, external?: boolean) => {
+    setIsSearchOpen(false);
+    setSearchQuery('');
+    if (external) {
+      window.open(path, path.startsWith('mailto:') ? '_self' : '_blank', 'noopener,noreferrer');
+      return;
+    }
+    if (path === '#sobre' || path === '#contato') {
+      if (location.pathname !== '/') {
+        navigate('/', { state: path === '#sobre' ? { scrollToAbout: true } : { scrollToContact: true } });
+      } else {
+        document.getElementById(path.slice(1))?.scrollIntoView({ behavior: 'smooth' });
+      }
+    } else {
+      navigate(path);
+    }
+  };
+
+  const goToProperty = (prop: SearchProperty) => {
+    setIsSearchOpen(false);
+    setSearchQuery('');
+    navigate(prop.categoryPath, { state: { openId: prop.id } });
+  };
+
+  const handleSearchKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (!combinedResultsCount) return;
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      setActiveResultIndex((i) => (i + 1) % combinedResultsCount);
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      setActiveResultIndex((i) => (i - 1 + combinedResultsCount) % combinedResultsCount);
+    } else if (e.key === 'Enter') {
+      e.preventDefault();
+      if (activeResultIndex < matchedProperties.length) {
+        goToProperty(matchedProperties[activeResultIndex]);
+      } else {
+        const page = matchedPages[activeResultIndex - matchedProperties.length];
+        if (page) goToPage(page.path, page.external);
+      }
+    }
+  };
+
+  const highlightMatch = (text: string, query: string) => {
+    if (!query.trim()) return text;
+    const normalizedText = normalizeText(text);
+    const idx = normalizedText.indexOf(normalizeText(query).split(' ')[0]);
+    const wordLen = normalizeText(query).split(' ')[0].length;
+    if (idx === -1 || wordLen === 0) return text;
+    return (
+      <>
+        {text.slice(0, idx)}
+        <span style={{ color: cyanBrand }}>{text.slice(idx, idx + wordLen)}</span>
+        {text.slice(idx + wordLen)}
+      </>
+    );
+  };
+
+  const pageIconMap: Record<SearchPage['icon'], typeof Home> = {
+    home: Home, info: Info, building: Building2, mail: Mail, newspaper: Newspaper, shield: ShieldCheck, doc: FileText,
+    whatsapp: MessageCircle, instagram: Instagram
+  };
 
   return (
     <header className="bg-white pt-3 pb-3 border-b border-gray-100 relative z-50">
@@ -153,7 +252,7 @@ const Header = ({ lang, setLang }: { lang: 'pt' | 'en'; setLang: (l: 'pt' | 'en'
             {/* Botão de Pesquisa visível apenas no Desktop */}
             <button
               onClick={() => setIsSearchOpen(true)}
-              className="hidden md:flex border border-gray-700 px-3 sm:px-5 py-1.5 rounded-full text-[11px] sm:text-[12px] tracking-widest uppercase hover:bg-gray-50 font-bold transition-all items-center gap-2"
+              className="hidden md:flex border border-gray-700 px-3 sm:px-5 py-1.5 rounded-full text-[12px] tracking-widest uppercase hover:bg-gray-50 font-bold transition-all items-center gap-2"
             >
               <Search size={14} className="text-gray-700" />
               <span>{lang === 'pt' ? 'Pesquisar' : 'Search'}</span>
@@ -178,21 +277,22 @@ const Header = ({ lang, setLang }: { lang: 'pt' | 'en'; setLang: (l: 'pt' | 'en'
             <button
               onClick={() => setIsSearchOpen(true)}
               className="md:hidden text-gray-900 hover:opacity-70 transition-opacity p-1"
-              aria-label="Pesquisar"
+              aria-label={lang === 'en' ? 'Search' : 'Pesquisar'}
             >
               <Search size={22} strokeWidth={1.2} />
             </button>
 
             {/* Instagram e Idiomas visíveis apenas no Desktop */}
             <div className="hidden md:flex items-center gap-4 text-gray-600">
-              <a href={instagramUrl} target="_blank" rel="noreferrer" className="hover:text-black transition-colors">
+              <a href={instagramUrl} target="_blank" rel="noreferrer" className="icon-tooltip-wrapper hover:text-black transition-colors">
                 <Instagram size={20} strokeWidth={1.2} />
+                <span className="icon-tooltip">Instagram</span>
               </a>
               <div className="flex gap-2 items-center border-l border-gray-400 pl-4">
-                <button onClick={() => { setLang('pt'); localStorage.setItem('language', 'pt'); }} className={`${lang === 'pt' ? 'opacity-100' : 'opacity-40'} transition-opacity`}>
+                <button onClick={() => setLang('pt')} className={`${lang === 'pt' ? 'opacity-100' : 'opacity-40'} transition-opacity`}>
                   <img src="https://flagcdn.com/w40/br.png" className="w-5 sm:w-6" alt="PT" />
                 </button>
-                <button onClick={() => { setLang('en'); localStorage.setItem('language', 'en'); }} className={`${lang === 'en' ? 'opacity-100' : 'opacity-40'} transition-opacity`}>
+                <button onClick={() => setLang('en')} className={`${lang === 'en' ? 'opacity-100' : 'opacity-40'} transition-opacity`}>
                   <img src="https://flagcdn.com/w40/us.png" className="w-5 sm:w-6" alt="EN" />
                 </button>
               </div>
@@ -213,18 +313,18 @@ const Header = ({ lang, setLang }: { lang: 'pt' | 'en'; setLang: (l: 'pt' | 'en'
                   <a
                     href={path}
                     onClick={(e) => handleNavigation(e, path)}
-                    className="relative text-[14px] lg:text-[16px] font-bold tracking-[0.2em] uppercase text-gray-900 pb-2"
+                    className="relative text-[16px] font-bold tracking-[0.2em] uppercase text-gray-900 pb-2"
                   >
-                    {item}
+                    <span className="lang-fade-text">{item}</span>
                     <span className="absolute left-0 bottom-1 w-0 h-[1.5px] bg-gray-500 transition-all duration-500 ease-in-out group-hover:w-full"></span>
                   </a>
                 ) : (
                   <Link
                     to={path === "#" || path === "whatsapp" ? "" : path}
                     onClick={(e) => handleNavigation(e, path)}
-                    className="relative text-[14px] lg:text-[16px] font-bold tracking-[0.2em] uppercase text-gray-900 pb-2"
+                    className="relative text-[16px] font-bold tracking-[0.2em] uppercase text-gray-900 pb-2"
                   >
-                    {item}
+                    <span className="lang-fade-text">{item}</span>
                     <span className="absolute left-0 bottom-1 w-0 h-[1.5px] bg-gray-500 transition-all duration-500 ease-in-out group-hover:w-full"></span>
                   </Link>
                 )}
@@ -265,7 +365,7 @@ const Header = ({ lang, setLang }: { lang: 'pt' | 'en'; setLang: (l: 'pt' | 'en'
                   <button
                     onClick={() => setIsMobileMenuOpen(false)}
                     className="text-gray-900 hover:opacity-70 transition-opacity p-1"
-                    aria-label="Fechar Menu"
+                    aria-label={lang === 'en' ? 'Close Menu' : 'Fechar Menu'}
                   >
                     <X size={26} strokeWidth={1.2} />
                   </button>
@@ -297,7 +397,7 @@ const Header = ({ lang, setLang }: { lang: 'pt' | 'en'; setLang: (l: 'pt' | 'en'
                                   onClick={() => setIsMobileMenuOpen(false)}
                                   className="text-xs font-bold tracking-[0.1em] uppercase text-gray-600 hover:text-black transition-colors"
                                 >
-                                  {title}
+                                  <span className="lang-fade-text">{title}</span>
                                 </Link>
                               ))}
                             </div>
@@ -316,7 +416,7 @@ const Header = ({ lang, setLang }: { lang: 'pt' | 'en'; setLang: (l: 'pt' | 'en'
                         }}
                         className="text-sm font-bold tracking-[0.15em] uppercase text-gray-900 py-1 hover:opacity-70 transition-opacity"
                       >
-                        {item}
+                        <span className="lang-fade-text">{item}</span>
                       </a>
                     ) : (
                       <Link
@@ -328,7 +428,7 @@ const Header = ({ lang, setLang }: { lang: 'pt' | 'en'; setLang: (l: 'pt' | 'en'
                         }}
                         className="text-sm font-bold tracking-[0.15em] uppercase text-gray-900 py-1 hover:opacity-70 transition-opacity"
                       >
-                        {item}
+                        <span className="lang-fade-text">{item}</span>
                       </Link>
                     );
                   })}
@@ -341,10 +441,10 @@ const Header = ({ lang, setLang }: { lang: 'pt' | 'en'; setLang: (l: 'pt' | 'en'
                   <Instagram size={18} strokeWidth={1.5} /> Instagram
                 </a>
                 <div className="flex gap-3 items-center">
-                  <button onClick={() => { setLang('pt'); localStorage.setItem('language', 'pt'); }} className={`${lang === 'pt' ? 'opacity-100' : 'opacity-40'} transition-opacity`}>
+                  <button onClick={() => setLang('pt')} className={`${lang === 'pt' ? 'opacity-100' : 'opacity-40'} transition-opacity`}>
                     <img src="https://flagcdn.com/w40/br.png" className="w-5" alt="PT" />
                   </button>
-                  <button onClick={() => { setLang('en'); localStorage.setItem('language', 'en'); }} className={`${lang === 'en' ? 'opacity-100' : 'opacity-40'} transition-opacity`}>
+                  <button onClick={() => setLang('en')} className={`${lang === 'en' ? 'opacity-100' : 'opacity-40'} transition-opacity`}>
                     <img src="https://flagcdn.com/w40/us.png" className="w-5" alt="EN" />
                   </button>
                 </div>
@@ -356,7 +456,7 @@ const Header = ({ lang, setLang }: { lang: 'pt' | 'en'; setLang: (l: 'pt' | 'en'
 
       {/* MODAL DE PESQUISA (Para Desktop e Mobile) */}
       {isSearchOpen && (
-        <div className="fixed inset-0 bg-white/98 backdrop-blur-md z-[100] flex flex-col p-4 sm:p-8 md:p-20 animate-fade-in overflow-y-auto">
+        <div className="fixed inset-0 bg-white/98 backdrop-blur-md z-[100] flex flex-col p-4 sm:p-8 md:p-16 animate-fade-in overflow-y-auto">
           <div className="flex justify-end w-full">
             <button
               onClick={() => { setIsSearchOpen(false); setSearchQuery(''); }}
@@ -365,39 +465,165 @@ const Header = ({ lang, setLang }: { lang: 'pt' | 'en'; setLang: (l: 'pt' | 'en'
               {lang === 'pt' ? 'Fechar' : 'Close'} <X size={20} />
             </button>
           </div>
-          <div className="max-w-4xl w-full mx-auto mt-10 md:mt-24">
-            <input
-              type="text"
-              autoFocus
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder={lang === 'pt' ? 'O que você procura? (Ex: Apartamentos, Campo...)' : 'What are you looking for? (e.g., Apartments, Country...)'}
-              className="w-full bg-transparent border-b border-gray-900 py-3 md:py-4 text-xl sm:text-2xl md:text-4xl font-extralight tracking-wide outline-none placeholder:text-gray-300 font-garamond"
-            />
-            <div className="mt-8 md:mt-12">
-              <p className="text-[11px] tracking-[0.3em] font-bold uppercase text-gray-400 mb-6">
-                {lang === 'pt' ? 'Categorias Sugeridas' : 'Suggested Categories'}
-              </p>
-              <div className="flex flex-col gap-4">
-                {filteredProperties.length > 0 ? (
-                  filteredProperties.map((item, idx) => (
-                    <Link
-                      key={idx}
-                      to={item.path}
-                      onClick={() => { setIsSearchOpen(false); setSearchQuery(''); }}
-                      className="text-lg md:text-2xl font-qlassy text-gray-800 hover:text-black hover:translate-x-2 transition-all flex items-center justify-between group py-2 border-b border-gray-100"
-                    >
-                      <span>{item.title}</span>
-                      <ArrowUpRight size={18} className="opacity-0 group-hover:opacity-100 transition-opacity" />
-                    </Link>
-                  ))
-                ) : (
-                  <p className="text-gray-500 font-garamond italic text-base md:text-lg">
-                    {lang === 'pt' ? 'Nenhuma categoria encontrada para sua busca.' : 'No categories found for your search.'}
-                  </p>
-                )}
-              </div>
+          <div className="max-w-4xl w-full mx-auto mt-6 md:mt-14">
+            <div className="relative">
+              <Search size={24} strokeWidth={1.2} className="absolute left-0 top-1/2 -translate-y-1/2 text-gray-300 pointer-events-none" />
+              <input
+                type="text"
+                autoFocus
+                value={searchQuery}
+                onChange={(e) => { setSearchQuery(e.target.value); setActiveResultIndex(0); }}
+                onKeyDown={handleSearchKeyDown}
+                placeholder={lang === 'pt' ? 'Busque por imóvel, cidade, característica ou página...' : 'Search for a property, city, feature or page...'}
+                className="w-full bg-transparent border-b border-gray-900 py-3 md:py-4 pl-10 text-2xl sm:text-4xl font-extralight tracking-wide outline-none placeholder:text-gray-300 font-garamond"
+              />
             </div>
+
+            <div className="mt-8 md:mt-12 pb-8">
+              {queryWords.length === 0 ? (
+                <>
+                  <p className="text-[11px] tracking-[0.3em] font-bold uppercase text-gray-400 mb-5">
+                    {lang === 'pt' ? 'Categorias' : 'Categories'}
+                  </p>
+                  <div className="flex flex-wrap gap-3 mb-12">
+                    {quickCategories.map((cat, idx) => (
+                      <button
+                        key={idx}
+                        onClick={() => goToPage(cat.path)}
+                        className="border border-gray-200 hover:border-gray-900 hover:bg-gray-900 hover:text-white transition-all px-5 py-2.5 rounded-full text-[11px] font-bold tracking-widest uppercase"
+                      >
+                        {cat.title}
+                      </button>
+                    ))}
+                  </div>
+
+                  <p className="text-[11px] tracking-[0.3em] font-bold uppercase text-gray-400 mb-5">
+                    {lang === 'pt' ? 'Imóveis em Destaque' : 'Featured Properties'}
+                  </p>
+                  <div className="grid sm:grid-cols-3 gap-5">
+                    {featuredProperties.map((p) => (
+                      <button key={`${p.categoryPath}-${p.id}`} onClick={() => goToProperty(p)} className="text-left group">
+                        <div className="w-full aspect-[4/3] overflow-hidden rounded-sm mb-3 bg-gray-100">
+                          <img
+                            src={p.image}
+                            alt={lang === 'en' ? p.titleEn : p.title}
+                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                          />
+                        </div>
+                        <p className="font-qlassy text-lg text-gray-800 leading-tight">{lang === 'en' ? p.titleEn : p.title}</p>
+                        <p className="text-gray-400 text-xs font-garamond flex items-center gap-1 mt-1">
+                          <MapPin size={12} />{p.location}
+                        </p>
+                      </button>
+                    ))}
+                  </div>
+                </>
+              ) : (
+                <>
+                  {matchedProperties.length > 0 && (
+                    <div className="mb-10">
+                      <p className="text-[11px] tracking-[0.3em] font-bold uppercase text-gray-400 mb-4">
+                        {lang === 'pt' ? `Imóveis (${matchedProperties.length})` : `Properties (${matchedProperties.length})`}
+                      </p>
+                      <div className="flex flex-col gap-1">
+                        {matchedProperties.map((p, idx) => {
+                          const isActive = activeResultIndex === idx;
+                          return (
+                            <button
+                              key={`${p.categoryPath}-${p.id}`}
+                              onClick={() => goToProperty(p)}
+                              onMouseEnter={() => setActiveResultIndex(idx)}
+                              className={`flex items-center gap-4 p-3 rounded-sm transition-colors text-left ${isActive ? 'bg-gray-50' : ''}`}
+                            >
+                              <div className="w-16 h-16 rounded-sm overflow-hidden bg-gray-100 flex-shrink-0">
+                                <img src={p.image} className="w-full h-full object-cover" alt="" />
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                <div className="flex items-center gap-2">
+                                  <p className="font-qlassy text-lg text-gray-800 truncate">
+                                    {highlightMatch(lang === 'en' ? p.titleEn : p.title, searchQuery)}
+                                  </p>
+                                  {p.sold && (
+                                    <span className="text-[9px] font-bold tracking-widest uppercase bg-gray-900 text-white px-2 py-0.5 rounded-full flex-shrink-0">
+                                      {lang === 'pt' ? 'Vendido' : 'Sold'}
+                                    </span>
+                                  )}
+                                </div>
+                                <p className="text-gray-400 text-xs font-garamond flex items-center gap-3 mt-1 flex-wrap">
+                                  <span className="flex items-center gap-1"><MapPin size={12} />{p.location}</span>
+                                  <span>{p.price}</span>
+                                  {p.beds && <span className="hidden md:flex items-center gap-1"><BedDouble size={12} />{p.beds}</span>}
+                                  {p.baths && <span className="hidden md:flex items-center gap-1"><Bath size={12} />{p.baths}</span>}
+                                  {p.cars && <span className="hidden md:flex items-center gap-1"><Car size={12} />{p.cars}</span>}
+                                </p>
+                              </div>
+                              <ArrowUpRight
+                                size={16}
+                                className={`flex-shrink-0 transition-opacity ${isActive ? 'opacity-100' : 'opacity-0'}`}
+                                style={{ color: cyanBrand }}
+                              />
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
+
+                  {matchedPages.length > 0 && (
+                    <div>
+                      <p className="text-[11px] tracking-[0.3em] font-bold uppercase text-gray-400 mb-4">
+                        {lang === 'pt' ? 'Páginas' : 'Pages'}
+                      </p>
+                      <div className="flex flex-col gap-1">
+                        {matchedPages.map((page, idx) => {
+                          const globalIdx = matchedProperties.length + idx;
+                          const isActive = activeResultIndex === globalIdx;
+                          const Icon = pageIconMap[page.icon];
+                          return (
+                            <button
+                              key={page.path}
+                              onClick={() => goToPage(page.path, page.external)}
+                              onMouseEnter={() => setActiveResultIndex(globalIdx)}
+                              className={`flex items-center gap-4 p-3 rounded-sm transition-colors text-left ${isActive ? 'bg-gray-50' : ''}`}
+                            >
+                              <div
+                                className="w-11 h-11 rounded-full flex items-center justify-center flex-shrink-0"
+                                style={{ backgroundColor: `${cyanBrand}18`, color: cyanBrand }}
+                              >
+                                <Icon size={18} strokeWidth={1.5} />
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                <p className="font-qlassy text-lg text-gray-800">
+                                  {highlightMatch(lang === 'en' ? page.titleEn : page.title, searchQuery)}
+                                </p>
+                                <p className="text-gray-400 text-xs font-garamond">{lang === 'en' ? page.subtitleEn : page.subtitle}</p>
+                              </div>
+                              <ArrowUpRight
+                                size={16}
+                                className={`flex-shrink-0 transition-opacity ${isActive ? 'opacity-100' : 'opacity-0'}`}
+                                style={{ color: cyanBrand }}
+                              />
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
+
+                  {combinedResultsCount === 0 && (
+                    <p className="text-gray-500 font-garamond italic text-lg">
+                      {lang === 'pt' ? 'Nenhum resultado encontrado para sua busca.' : 'No results found for your search.'}
+                    </p>
+                  )}
+                </>
+              )}
+            </div>
+
+            {combinedResultsCount > 0 && (
+              <div className="hidden sm:flex items-center gap-2 text-[10px] text-gray-300 tracking-widest uppercase font-bold border-t border-gray-100 pt-4 pb-6">
+                <CornerDownLeft size={12} /> {lang === 'pt' ? 'para selecionar' : 'to select'}
+              </div>
+            )}
           </div>
         </div>
       )}
@@ -490,9 +716,9 @@ const Footer = ({ lang }: { lang: 'pt' | 'en' }) => {
   return (
     <footer id="contato" className="bg-white pt-12 md:pt-16 pb-8 border-t border-gray-100 relative z-40">
       <div className="container mx-auto px-4 sm:px-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-12 mb-12 md:mb-16">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-x-4 gap-y-10 sm:gap-8 md:gap-12 mb-12 md:mb-16 text-center md:text-left">
 
-          <div className="flex flex-col items-start lg:pr-4 ">
+          <div className="col-span-2 lg:col-span-1 flex flex-col items-center md:items-start lg:pr-4 ">
             <img src="/logo/title3.png" alt="A Propriedade" className="h-7 md:h-8 mb-4" />
             <p className="text-gray-500 text-sm leading-relaxed font-garamond">
               {lang === 'pt'
@@ -502,8 +728,8 @@ const Footer = ({ lang }: { lang: 'pt' | 'en' }) => {
           </div>
 
           <div>
-            <h4 className="text-[14px] md:text-[15px] font-bold text-black uppercase mb-4">Explore</h4>
-            <ul className="space-y-2.5">
+            <h4 className="text-[15px] font-bold text-black uppercase mb-4">Explore</h4>
+            <ul className="flex flex-col items-center md:items-start space-y-2.5">
               {t.nav.map((item, i) => {
                 const path = menuRoutes[item] || "#";
                 return (
@@ -513,7 +739,7 @@ const Footer = ({ lang }: { lang: 'pt' | 'en' }) => {
                       onClick={(e) => handleNavigation(e, path)}
                       className="relative text-gray-500 hover:text-black transition-colors text-xs font-bold tracking-[0.1em] uppercase block pb-1"
                     >
-                      {item}
+                      <span className="lang-fade-text">{item}</span>
                       <span className="absolute left-0 bottom-0 w-0 h-[1.5px] bg-black transition-all duration-500 ease-in-out group-hover:w-full"></span>
                     </Link>
                   </li>
@@ -523,16 +749,17 @@ const Footer = ({ lang }: { lang: 'pt' | 'en' }) => {
           </div>
 
           <div>
-            <h4 className="text-[14px] md:text-[15px] font-bold text-black uppercase mb-4">
+            <h4 className="text-[15px] font-bold text-black uppercase mb-4">
               {lang === 'pt' ? 'Contato' : 'Contact'}
             </h4>
-            <ul className="space-y-2.5 text-gray-500 text-sm font-garamond-raw">
+            <ul className="flex flex-col items-center md:items-start space-y-2.5 text-gray-500 text-sm font-garamond-raw">
               <li className="group w-fit">
                 <a
                   href="mailto:andre@apropriedade.com.br"
-                  className="relative text-gray-500 hover:text-black transition-colors block pb-1"
+                  className="icon-tooltip-wrapper relative text-gray-500 hover:text-black transition-colors block pb-1"
                 >
                   <Mail size={18} strokeWidth={1.5} stroke="currentColor" />
+                  <span className="icon-tooltip">{lang === 'pt' ? 'Enviar e-mail' : 'Send email'}</span>
                   <span className="absolute left-0 bottom-0 w-0 h-[1.5px] bg-black transition-all duration-500 ease-in-out group-hover:w-full"></span>
                 </a>
               </li>
@@ -542,9 +769,10 @@ const Footer = ({ lang }: { lang: 'pt' | 'en' }) => {
                   href={whatsappUrl}
                   target="_blank"
                   rel="noreferrer"
-                  className="relative text-gray-500 hover:text-black transition-colors block pb-1"
+                  className="icon-tooltip-wrapper relative text-gray-500 hover:text-black transition-colors block pb-1"
                 >
                   <MessageCircle size={18} strokeWidth={1.5} stroke="currentColor" />
+                  <span className="icon-tooltip">WhatsApp</span>
                   <span className="absolute left-0 bottom-0 w-0 h-[1.5px] bg-black transition-all duration-500 ease-in-out group-hover:w-full"></span>
                 </a>
               </li>
@@ -554,21 +782,22 @@ const Footer = ({ lang }: { lang: 'pt' | 'en' }) => {
                   href={instagramUrl}
                   target="_blank"
                   rel="noreferrer"
-                  className="relative text-gray-500 hover:text-black transition-colors block pb-1"
+                  className="icon-tooltip-wrapper relative text-gray-500 hover:text-black transition-colors block pb-1"
                 >
                   <Instagram size={18} strokeWidth={1.5} stroke="currentColor" />
+                  <span className="icon-tooltip">Instagram</span>
                   <span className="absolute left-0 bottom-0 w-0 h-[1.5px] bg-black transition-all duration-500 ease-in-out group-hover:w-full"></span>
                 </a>
               </li>
             </ul>
           </div>
 
-          <div>
-            <h4 className="text-[14px] md:text-[15px] font-bold text-black uppercase mb-4">Newsletter</h4>
+          <div className="col-span-2 lg:col-span-1">
+            <h4 className="text-[15px] font-bold text-black uppercase mb-4">Newsletter</h4>
             <p className="text-gray-500 text-sm mb-4 font-garamond">
               {lang === 'pt'
                 ? 'Assine para receber nossa revista digital e lançamentos em primeira mão.'
-                : 'Subscribe to receive our digital magazine and first-hand releases.'}
+                : 'Subscribe to receive our digital magazine and be the first to know about new listings.'}
             </p>
             <form onSubmit={handleOpenNewsletter} className="flex items-center border-b border-gray-300 focus-within:border-black transition-colors pb-1 group">
               <input
@@ -611,7 +840,7 @@ const Footer = ({ lang }: { lang: 'pt' | 'en' }) => {
             >
               <X size={20} />
             </button>
-            <h3 className="text-lg md:text-xl font-qlassy text-black mb-2 uppercase tracking-wide">
+            <h3 className="text-xl font-qlassy text-black mb-2 uppercase tracking-wide">
               {lang === 'pt' ? 'Receber Revista Digital' : 'Receive Digital Magazine'}
             </h3>
             <p className="text-gray-500 font-garamond text-sm mb-6 leading-relaxed">
@@ -746,13 +975,13 @@ const IntegratedHero = ({ lang }: { lang: 'pt' | 'en' }) => {
             <div className={`absolute inset-0 flex flex-col justify-end p-6 sm:p-10 md:p-16 z-20 transition-opacity duration-1000 ${isCurrent ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
               {isCurrent && (
                 <Reveal key={`text-${currentIndex}-${lang}`} delay={400}>
-                  <p className="text-white text-[10px] sm:text-[11px] tracking-[0.4em] uppercase font-bold mb-2 opacity-80 font-heading">
+                  <p className="text-white text-[11px] tracking-[0.4em] uppercase font-bold mb-2 opacity-80 font-heading">
                     {t.hero.label}
                   </p>
-                  <h2 className="text-white text-2xl sm:text-4xl md:text-5xl font-extralight max-w-2xl leading-tight mb-4 md:mb-6 font-qlassy uppercase">
+                  <h2 className="text-white text-5xl font-extralight max-w-2xl leading-tight mb-4 md:mb-6 font-qlassy uppercase">
                     {currentTitle}
                   </h2>
-                  <button className="border border-white text-white px-5 py-2 rounded-full text-[10px] sm:text-[11px] tracking-widest uppercase hover:bg-white hover:text-black transition-all duration-300">
+                  <button className="border border-white text-white px-5 py-2 rounded-full text-[11px] tracking-widest uppercase hover:bg-white hover:text-black transition-all duration-300">
                     {lang === 'pt' ? 'SAIBA MAIS' : 'LEARN MORE'}
                   </button>
                 </Reveal>
@@ -824,13 +1053,13 @@ const HomePage = ({ lang }: { lang: 'pt' | 'en' }) => {
 
             <div className="w-full space-y-5 md:space-y-6 flex flex-col justify-center lg:pr-6">
               <Reveal delay={200}>
-                <h3 className="text-2xl md:text-3xl font-qlassy text-[#1A1A1A]">
+                <h3 className="text-3xl font-qlassy text-[#1A1A1A]">
                   {t.about.title}
                 </h3>
               </Reveal>
 
               <Reveal delay={400}>
-                <div className="text-justify space-y-4 text-sm md:text-base text-gray-600 font-garamond leading-relaxed">
+                <div className="text-justify space-y-4 text-base text-gray-600 font-garamond leading-relaxed">
                   {lang === 'pt' ? (
                     <>
                       <p>A Propriedade foi criada com a ideia de ser um destino definitivo para imóveis de luxo, de maneira simplificada, tornando a experiência do cliente dinâmica e inesquecível. Apesar de parecer uma empresa jovem, criada em 2022, nosso founder e head da operação, André Rodrigues, já atuava como corretor de imóveis desde 2014 no mercado de alto padrão de lançamento e prontos, na renomada imobiliária Lopes, onde desenvolveu experiências e ferramentas que moldaram sua visão desse setor tão exigente, que demanda muita efetividade, conhecimento e organização.</p>
@@ -852,17 +1081,17 @@ const HomePage = ({ lang }: { lang: 'pt' | 'en' }) => {
           <div className="pt-12 border-t border-black/10 w-full">
             <Reveal delay={500} className="grid grid-cols-3 gap-6 text-center">
               <div>
-                <p className="font-qlassy text-4xl md:text-5xl leading-none tracking-tighter">+{/* */} <Counter end={12} /></p>
+                <p className="font-qlassy text-5xl leading-none tracking-tighter">+{/* */} <Counter end={12} /></p>
                 <p className="text-[14px] tracking-widest uppercase font-bold text-gray-500 mt-3">{t.about.stats[0]}</p>
               </div>
               <div>
-                <p className="font-qlassy text-4xl md:text-5xl leading-none tracking-tighter" style={{ color: cyanBrand }}>
+                <p className="font-qlassy text-5xl leading-none tracking-tighter" style={{ color: cyanBrand }}>
                   +{/* */} <Counter end={30} />mi
                 </p>
                 <p className="text-[14px] tracking-widest uppercase font-bold text-gray-500 mt-3">{t.about.stats[1]}</p>
               </div>
               <div>
-                <p className="font-qlassy text-4xl md:text-5xl leading-none tracking-tighter"><Counter end={100} />%</p>
+                <p className="font-qlassy text-5xl leading-none tracking-tighter"><Counter end={100} />%</p>
                 <p className="text-[14px] tracking-widest uppercase font-bold text-gray-500 mt-3">
                   {lang === 'pt' ? 'Foco em Luxo' : 'Luxury Focus'}
                 </p>
@@ -874,14 +1103,14 @@ const HomePage = ({ lang }: { lang: 'pt' | 'en' }) => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center w-full mb-24 pt-24">
           <div className="w-full flex flex-col justify-center">
             <Reveal className="space-y-6">
-              <h2 className="text-3xl md:text-4xl font-qlassy text-[#1A1A1A]/80 leading-[1.15] tracking-tight max-w-full">
+              <h2 className="text-4xl font-qlassy text-[#1A1A1A]/80 leading-[1.15] tracking-tight max-w-full">
                 {lang === 'pt' ? (
                   <>A Propriedade Celebra Um Design Extraordinário Para Uma Comunidade Inspirada.</>
                 ) : (
                   <>A Propriedade Celebrates Extraordinary Design For An Inspired Community.</>
                 )}
               </h2>
-              <p className="text-base md:text-lg text-[#1A1A1A]/70 font-garamond max-w-xl leading-relaxed">
+              <p className="text-lg text-[#1A1A1A]/70 font-garamond max-w-xl leading-relaxed">
                 {lang === 'pt' ? (
                   <>Promovendo o design autêntico por meio da publicação impressa A Propriedade, publicação digital, conteúdo em vídeo e canais de redes sociais, nossa missão é destacar e apoiar a comunidade local de design.</>
                 ) : (
@@ -894,7 +1123,7 @@ const HomePage = ({ lang }: { lang: 'pt' | 'en' }) => {
           <div className="w-full h-full min-h-[300px] lg:min-h-[50vh] flex items-center">
             <Reveal delay={200} className="w-full h-full">
               <img
-                src="/hero/2.jpg"
+                src="/categorias/casas_urbanas/duasMarias/45.jpg"
                 className="w-full h-full max-h-[60vh] object-cover rounded-none shadow-lg"
                 alt="A Propriedade Panorama"
               />
@@ -910,8 +1139,29 @@ const HomePage = ({ lang }: { lang: 'pt' | 'en' }) => {
 };
 
 // --- ROTEADOR PRINCIPAL (APP) ---
+const LANG_FADE_MS = 220;
+
 export default function App() {
   const [lang, setLang] = useState<'pt' | 'en'>((localStorage.getItem('language') as 'pt' | 'en') || 'pt');
+  const [isLangFading, setIsLangFading] = useState(false);
+  const pendingLangRef = useRef<'pt' | 'en' | null>(null);
+
+  // Troca apenas o TEXTO com fade (o CSS abaixo só atinge títulos/parágrafos/spans/labels,
+  // nunca <img>), esperando o fade-out terminar antes de trocar o conteúdo, para não "pular".
+  const changeLang = (newLang: 'pt' | 'en') => {
+    if (newLang === lang || pendingLangRef.current) return;
+    pendingLangRef.current = newLang;
+    setIsLangFading(true);
+    window.setTimeout(() => {
+      const next = pendingLangRef.current;
+      if (!next) return;
+      pendingLangRef.current = null;
+      setLang(next);
+      localStorage.setItem('language', next);
+      window.dispatchEvent(new Event('languageChange'));
+      requestAnimationFrame(() => setIsLangFading(false));
+    }, LANG_FADE_MS);
+  };
 
   return (
     <Router>
@@ -962,6 +1212,10 @@ export default function App() {
             letter-spacing: normal !important;
           }
 
+          .icon-tooltip-wrapper { position: relative; display: inline-flex; align-items: center; justify-content: center; }
+          .icon-tooltip { position: absolute; left: 50%; bottom: calc(100% + 8px); transform: translateX(-50%) translateY(4px); background: #1a1a1a; color: white; padding: 6px 9px; border-radius: 3px; font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif !important; font-size: 10px; text-transform: none !important; letter-spacing: normal !important; line-height: 1.2; white-space: nowrap; opacity: 0; visibility: hidden; pointer-events: none; transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s ease; z-index: 50; box-shadow: 0 4px 12px rgba(0,0,0,0.12); }
+          .icon-tooltip-wrapper:hover .icon-tooltip { opacity: 1; visibility: visible; transform: translateX(-50%) translateY(0); }
+
           @keyframes localZoomIn {
             0% { transform: scale(1.02); }
             100% { transform: scale(1.10); }
@@ -1001,23 +1255,34 @@ export default function App() {
           .animate-fade-in {
             animation: fadeIn 0.3s ease-out forwards;
           }
+
+          /* Troca de idioma: só o TEXTO recebe fade, imagens/ícones nunca são afetados */
+          h1, h2, h3, h4, h5, h6, p, span, label, .lang-fade-text {
+            transition: opacity ${LANG_FADE_MS}ms ease;
+          }
+          .lang-fading h1, .lang-fading h2, .lang-fading h3, .lang-fading h4, .lang-fading h5, .lang-fading h6,
+          .lang-fading p, .lang-fading span, .lang-fading label, .lang-fading .lang-fade-text {
+            opacity: 0;
+          }
         `}} />
 
       {/* O Header continua aqui fora, logo, ele é exibido fixamente em todas as rotas */}
-      <Header lang={lang} setLang={setLang} />
+      <div className={isLangFading ? 'lang-fading' : ''}>
+        <Header lang={lang} setLang={changeLang} />
 
-      <Routes>
-        <Route path="/" element={<HomePage lang={lang} />} />
-        <Route path="/magazinepage" element={<MagazinePage />} />
-        <Route path="/casadecampoemontanha" element={<CasadeCampoeMontanha />} />
-        <Route path="/casasurbanas" element={<CasasUrbanas />} />
-        <Route path="/casasdemontanha" element={<Montanha />} />
-        <Route path="/apartamentos" element={<Apartamentos />} />
-        <Route path="/comercialecorporativo" element={<ComercialECorporativo />} />
+        <Routes>
+          <Route path="/" element={<HomePage lang={lang} />} />
+          <Route path="/magazinepage" element={<MagazinePage />} />
+          <Route path="/casadecampoemontanha" element={<CasadeCampoeMontanha />} />
+          <Route path="/casasurbanas" element={<CasasUrbanas />} />
+          <Route path="/casasdemontanha" element={<Montanha />} />
+          <Route path="/apartamentos" element={<Apartamentos />} />
+          <Route path="/comercialecorporativo" element={<ComercialECorporativo />} />
 
-        <Route path="/politica-de-privacidade" element={<PoliticaPrivacidade />} />
-        <Route path="/termos-de-uso" element={<TermosUso />} />
-      </Routes>
+          <Route path="/politica-de-privacidade" element={<PoliticaPrivacidade />} />
+          <Route path="/termos-de-uso" element={<TermosUso />} />
+        </Routes>
+      </div>
     </Router>
   );
 }

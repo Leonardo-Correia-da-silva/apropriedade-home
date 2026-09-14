@@ -1,10 +1,12 @@
 import React, { useEffect, useState, memo } from 'react';
+import { useLocation } from 'react-router-dom';
 import {
   ArrowLeft,
   MapPin,
   BedDouble,
   Bath,
   Maximize,
+  Square,
   ArrowUpRight,
   Car,
   ChevronLeft,
@@ -30,7 +32,11 @@ const StyleInjector = memo(() => (
 
     h1, h2, h3 { font-family: 'Qlassy', serif !important; }
     .nav-label, .btn-label { font-family: 'NeueHelvetica', sans-serif !important; text-transform: uppercase; }
-    
+
+    .icon-tooltip-wrapper { position: relative; display: inline-flex; align-items: center; justify-content: center; }
+    .icon-tooltip { position: absolute; left: 50%; bottom: calc(100% + 8px); transform: translateX(-50%) translateY(4px); background: #1a1a1a; color: white; padding: 6px 9px; border-radius: 3px; font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif; font-size: 10px; line-height: 1.2; white-space: nowrap; opacity: 0; visibility: hidden; pointer-events: none; transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s ease; z-index: 50; box-shadow: 0 4px 12px rgba(0,0,0,0.12); }
+    .icon-tooltip-wrapper:hover .icon-tooltip { opacity: 1; visibility: visible; transform: translateX(-50%) translateY(0); }
+
     .editorial-description {
       font-family: 'EB Garamond', serif !important;
       font-size: 1.1rem !important;
@@ -62,7 +68,8 @@ interface PropertyListItem {
     beds: number;
     baths: number;
     cars: number;
-    size: string;
+    builtArea: string;
+    totalArea: string;
   };
   description?: string;
   descriptionEn?: string;
@@ -156,8 +163,8 @@ export default function Urbanas() {
   const properties: PropertyListItem[] = [
     {
       id: 1,
-      title: "Mansão Neoclássica, Alphaville Campinas",
-      titleEn: "Neoclassical Mansion, Alphaville Campinas",
+      title: "Mansão no condomínio, Alphaville Campinas",
+      titleEn: "Mansion in the Condominium, Alphaville Campinas",
       location: "Campinas, SP",
       price: "R$ 22.900.000",
       images: [
@@ -168,54 +175,51 @@ export default function Urbanas() {
         "/categorias/casas_urbanas/neoclassica-alphavile/capa5.jpg",
         "/categorias/casas_urbanas/neoclassica-alphavile/capa6.jpg"
       ],
-      gallery: Array.from({ length: 160 }, (_, i) =>
+      gallery: Array.from({ length: 56 }, (_, i) =>
         `/categorias/casas_urbanas/neoclassica-alphavile/fotos-mansao-neoclassica/${i + 1}.jpg`
       ),
-      specs: { beds: 5, baths: 7, cars: 6, size: "3.840m²" },
-      description: "Uma residência contemporânea perfeitamente posicionada no prestigiado Condomínio Chácara São Rafael. Oferece ambientes integrados com iluminação natural abundante, acabamentos em materiais nobres e uma área de lazer que funciona como um verdadeiro clube privativo para sua família.",
-      descriptionEn: "A contemporary residence perfectly positioned in the prestigious Chácara São Rafael Condominium. It offers integrated environments with abundant natural lighting, finishes in noble materials, and a leisure area that serves as a true private club for your family."
+      specs: { beds: 5, baths: 7, cars: 6, builtArea: "1.280m²", totalArea: "3.840m²" },
+      description: "Mansão com arquitetura neoclássica disponível para venda no renomado condomínio clube Alphaville Campinas. Térrea, é destaque no residencial pela sua imponência, que impõe presença marcante e desperta admiração.\n\nIntegração dos ambientes, salas de estar para sete ambientes, cozinha com ilha central, espaço gourmet independente e conectado ao quintal. Piscina com hidromassagem e tratamento de ozônio, ideal para aquele relaxamento após um dia longo de trabalho. Academia e sala para massagem ou beauty care, home TV independente com sistema de som profissional, escritório amplo com total privacidade. Luz e ventilação naturais abundam em todos os ambientes, que possuem pé-direito alto. A área íntima contempla quatro amplas suítes, e os pisos receberam aquecimento controlado eletronicamente. A suíte principal conta com dois closets e banheiros separados, e se encontram em uma bela banheira de imersão - um spa dentro da suíte.\n\nDependência de empregada, despensa grande, quintal gramado espaçoso para recreação, praça externa italiana com fonte e paisagismo que acolhe.\n\nO terreno é bem amplo, um dos maiores do condomínio, e conta no fundo dele com um bosque privativo, onde não é permitido construção, mas sim contemplação. Lá de cima, é possível avistar os prédios da cidade, e assistir a uma bela paisagem.\n\nO condomínio Alphaville Campinas oferece uma gama completa de lazer, contando com quadras de tênis, futebol, academia ampla, salão de festas, playground, piscinas adulto e infantil, pista de caminhada e lagos. A segurança opera com portaria 24 horas, monitoramento por câmeras e ronda, além de total controle de acesso de moradores, visitantes e prestadores de serviços. Super bem localizado, fica às margens da rodovia SP-340 (Mogi-Campinas), e se conecta rapidamente aos principais shoppings da cidade e à rodovia Dom Pedro. Além disso, o residencial está ao lado do Alphaville Comercial, que oferece diversos serviços diariamente, como farmácia, banco, padaria, mercados, posto de combustível, salão de beleza e muito mais!"
     },
     {
       id: 2,
-      title: "Condomínio Fazenda Duas Marias",
-      titleEn: "Condominium Duas Marias Farm",
+      title: "Casa no condomínio, Fazenda Duas Marias Jaguariúna",
+      titleEn: "House in the Condominium, Fazenda Duas Marias Jaguariúna",
       location: "Jaguariúna, SP",
-      price: "R$ 18.000.000",
+      price: "R$ 17.990.000,00",
       images: [
-        "/categorias/casas_urbanas/duasMarias/TransferNow-Fotos Casa, condomínio Duas Marias, Jaguariúna/36.jpg",
-        "/categorias/casas_urbanas/duasMarias/TransferNow-Fotos Casa, condomínio Duas Marias, Jaguariúna/63.jpg",
-        "/categorias/casas_urbanas/duasMarias/TransferNow-Fotos Casa, condomínio Duas Marias, Jaguariúna/70.jpg",
-        "/categorias/casas_urbanas/duasMarias/TransferNow-Fotos Casa, condomínio Duas Marias, Jaguariúna/122.jpg",
-        "/categorias/casas_urbanas/duasMarias/TransferNow-Fotos Casa, condomínio Duas Marias, Jaguariúna/144.jpg",
-        "/categorias/casas_urbanas/duasMarias/TransferNow-Fotos Casa, condomínio Duas Marias, Jaguariúna/131.jpg",
+        "/categorias/casas_urbanas/duasMarias/45.jpg",
+        "/categorias/casas_urbanas/duasMarias/37.jpg",
+        "/categorias/casas_urbanas/duasMarias/39.jpg",
+        "/categorias/casas_urbanas/duasMarias/27.jpg",
+        "/categorias/casas_urbanas/duasMarias/52.jpg",
+        "/categorias/casas_urbanas/duasMarias/56.jpg",
       ],
-      gallery: Array.from({ length: 149 }, (_, i) =>
-        `/categorias/casas_urbanas/duasMarias/TransferNow-Fotos Casa, condomínio Duas Marias, Jaguariúna/${i + 1}.jpg`
+      gallery: Array.from({ length: 56 }, (_, i) =>
+        `/categorias/casas_urbanas/duasMarias/${i + 1}.jpg`
       ),
-      specs: { beds: 5, baths: 7, cars: 8, size: "8.900m²" },
-      description: "Uma verdadeira obra-prima contemporânea na Fazenda Duas Marias, em Jaguariúna. Com mais de 850 metros quadrados de área construída em um terreno de quase 9.000 metros quadrados, esta casa de campo térrea une arquitetura, paisagismo e natureza de forma fluida. Oferece ambientes integrados com pé-direito alto, acabamentos em pedras, madeira e concreto, além de um ecossistema de lazer privativo que inclui piscina aquecida com prainha, spa, rooftop e espaços de convivência discretamente em harmonia com o bosque.",
-      descriptionEn: "A true contemporary masterpiece at Fazenda Duas Marias in Jaguariúna. With over 850 square meters of built area on a plot of nearly 9,000 square meters, this single-story country home seamlessly blends architecture, landscaping, and nature. It features open-plan living areas with high ceilings and finishes in stone, wood, and concrete, alongside a private leisure complex—including a heated pool with a sun shelf, a spa, a rooftop terrace, and social areas—that sits in quiet harmony with the surrounding woodland."
+      specs: { beds: 6, baths: 10, cars: 8, builtArea: "850m²", totalArea: "10.004m²" },
+      description: "Casa localizada no condomínio fechado Fazenda Duas Marias, na cidade de Jaguariúna, interior de São Paulo, a aproximadamente 01h40 da capital. Conta com segurança profissional 24 horas, ronda e controle de acesso.\n\nDistribuída em blocos, oferece casa principal com seis dormitórios, sendo um de serviço, amplo living com pé-direito alto, cozinha com fogão assinado pela renomada Oficina Victorello, sala de TV independente, escritório, despensa, lavanderia, varanda social, piscina aquecida com iluminação, Spa e prainha, rodeada pelo solarium para um belo banho de sol. As suítes da casa principal e a sala de estar contam com piso aquecido eletronicamente, além de oferecer sistema de aspiração central. Casa automatizada com sistema Alexa.\n\nDuas garagens, sendo uma delas climatizada com mini-oficina para vários veículos, fogo de chão (firepit), rooftop em deck de madeira com vista panorâmica, lago ornamental cristalino para mergulho com peixes e tratamento de ozônio, salão de jogos climatizado, equipado e decorado, campo de futebol com grama especial e sistema de drenagem, vestiário com armários, banheiro e chuveiros, academia e sauna. Sistema de geração de energia fotovoltaica, irrigação, captação de água por cisterna e poço artesiano.\n\nO salão de festas gourmet, que fica no centro do terreno, tem mais de 130 m² de área, climatizado, lavabo, churrasqueiras a gás e carvão, sistema de som ambiente, bar, integração total com o quintal e paisagismo. Ideal para suas festas em família e amigos, isolada da casa principal, sem abrir mão da sua privacidade. O paisagismo assinado por Marcelo Novaes, conta com diversas espécies de plantas e árvores maduras adultas, como o pau-brasil que fica no jardim principal de boas-vindas. A parte mais densa do jardim guia, através de uma mini-trilha, aos redários acolhidos sob as imensas árvores adultas. No topo do terreno, horta, espaço zen, casa de árvore de madeira especial e o acesso social."
     },
     {
       id: 5,
-      title: "Condomínio Monte Sankhya",
-      titleEn: "Monte Sankhya Condominium",
+      title: "Casa no Condomínio Monte Sankhya",
+      titleEn: "House in the Monte Sankhya Condominium",
       location: "Serra Negra, SP",
-      price: "R$ 3.600.000",
+      price: "R$ 3.600.000,00",
       images: [
-        "/categorias/casas_urbanas/serranegra/19.jpg",
-        "/categorias/casas_urbanas/serranegra/63.jpg",
-        "/categorias/casas_urbanas/serranegra/26.jpg",
-        "/categorias/casas_urbanas/serranegra/35.jpg",
-        "/categorias/casas_urbanas/serranegra/55.jpg",
-        "/categorias/casas_urbanas/serranegra/74.jpg",
+        "/categorias/casas_urbanas/serranegra/4.jpg",
+        "/categorias/casas_urbanas/serranegra/2.jpg",
+        "/categorias/casas_urbanas/serranegra/28.jpg",
+        "/categorias/casas_urbanas/serranegra/22.jpg",
+        "/categorias/casas_urbanas/serranegra/9.jpg",
+        "/categorias/casas_urbanas/serranegra/31.jpg",
       ],
-      gallery: Array.from({ length: 75 }, (_, i) =>
+      gallery: Array.from({ length: 36 }, (_, i) =>
         `/categorias/casas_urbanas/serranegra/${i + 1}.jpg`
       ),
-      specs: { beds: 4, baths: 5, cars: 4, size: "2.600m²" },
-      description: "Localizada no conceituado Condomínio Monte Sankhya, esta propriedade em Serra Negra une o charme da serra ao máximo conforto. Com salas integradas com lareira, 4 suítes confortáveis e um belíssimo deck com piscina voltado para o horizonte, a casa oferece uma experiência única de tranquilidade e contemplação",
-      descriptionEn: "Located in the prestigious Monte Sankhya Condominium, this property in Serra Negra seamlessly blends mountain charm with ultimate comfort. Featuring open-plan living spaces with a fireplace, 4 cozy suites, and a stunning pool deck overlooking the horizon, the home offers a truly unique experience of peace and contemplation."
+      specs: { beds: 4, baths: 5, cars: 4, builtArea: "400m²", totalArea: "2.600m²" },
+      description: "Com quatro suítes confortáveis com armários, sendo a principal com closet grande, esta casa de montanha dentro de condomínio fechado possui ampla varanda que integra duas das suítes, com vista para as montanhas. A sala de estar com vários ambientes possui sala de lareira, estar e TV.\n\nA cozinha foi alocada em um espaço externo ao da casa principal, mas facilmente acessada. Foi onde os proprietários destinaram para receber familiares e amigos, aproveitando o prestígio das belas paisagens e vistas de tirar o fôlego de qualquer canto do ambiente. Fogão à lenha, churrasqueira, ilha central grande, sala de TV integrada para apoio aos eventos, sala de jogos, lavabo e sala de jantar. Com teto revestido de madeira e iluminação projetada, é o ponto mais utilizado da casa.\n\nO quintal é muito espaçoso e com vários níveis de topografia, devido a tipologia do terreno. Jardins e plantas compõem o quintal, que o convida para o descanso e apreciação da natureza. No nível mais baixo utilizado do terreno, há a área de lazer externa, com ampla piscina, solarium e pergolado.\n\nO condomínio oferece portaria com controle de acesso, sistema de câmeras, área de lazer com quadra, campo de futebol, salão de festas, jogos, biblioteca, mirante."
     },
     {
       id: 6,
@@ -234,7 +238,7 @@ export default function Urbanas() {
       gallery: Array.from({ length: 59 }, (_, i) =>
         `/categorias/casas_urbanas/parqueportugal/${i + 1}.jpg`
       ),
-      specs: { beds: 4, baths: 6, cars: 4, size: "350m²" },
+      specs: { beds: 4, baths: 6, cars: 4, builtArea: "", totalArea: "350m²" },
       description: "Uma residência charmosa no cobiçado Condomínio Residências Parque Portugal, a poucos minutos da Lagoa do Taquaral. O imóvel se destaca pelos seus ambientes sociais fluídos, piso em madeira, excelente iluminação natural, 4 dormitórios (2 suítes) e 4 vagas, oferecendo máxima privacidade e segurança em um dos endereços mais desejados de Campinas.",
       descriptionEn: "A charming residence in the highly sought-after Residências Parque Portugal Condominium, just minutes from the Taquaral Lagoon. The property stands out for its fluid social spaces, hardwood flooring, abundant natural light, 4 bedrooms (2 suites), and 4 parking spaces, offering ultimate privacy and security in one of Campinas' most desirable locations."
     },
@@ -255,7 +259,7 @@ export default function Urbanas() {
       gallery: Array.from({ length: 84 }, (_, i) =>
         `/categorias/casas_urbanas/villaggio/${i + 1}.jpg`
       ),
-      specs: { beds: 5, baths: 7, cars: 6, size: "691m²" },
+      specs: { beds: 5, baths: 7, cars: 6, builtArea: "", totalArea: "691m²" },
       description: "[Imóvel Vendido] Imponente casa no Condomínio Villaggio Via Condotti, no tradicional bairro Gramado em Campinas. Com distribuição fluida, 4 suítes confortáveis, riqueza em armários sob medida e um convidativo deck com piscina para os dias de sol, a propriedade oferece uma experiência de morar única, cercada por tranquilidade e segurança.",
       descriptionEn: "[Sold Property] An impressive home in the Villaggio Via Condotti Condominium, in Campinas' traditional Gramado neighborhood. Featuring a fluid layout, 4 comfortable suites, abundant custom storage, and an inviting pool deck for sunny days, this property offered a unique living experience surrounded by peace and security."
     }
@@ -307,6 +311,16 @@ export default function Urbanas() {
     window.scrollTo(0, 0);
   };
 
+  const routerLocation = useLocation();
+  useEffect(() => {
+    const openId = (routerLocation.state as { openId?: number } | null)?.openId;
+    if (openId) {
+      const match = properties.find((p) => p.id === openId);
+      if (match) handleOpenDetails(match);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [routerLocation.state]);
+
   // FUNÇÃO: Rola a página para o topo de forma suave
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -322,7 +336,7 @@ export default function Urbanas() {
         <button
           onClick={scrollToTop}
           className="fixed bottom-8 right-8 z-40 bg-white text-gray-800 w-12 h-12 rounded-none shadow-[0_4px_20px_rgba(0,0,0,0.08)] hover:scale-105 transition-all duration-300 flex items-center justify-center animate-fadeIn border border-gray-100"
-          aria-label="Voltar ao topo"
+          aria-label={lang === 'en' ? 'Back to top' : 'Voltar ao topo'}
         >
           <ArrowUp size={20} className="stroke-[1.5]" />
         </button>
@@ -348,8 +362,8 @@ export default function Urbanas() {
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/10" />
             <div className="absolute bottom-12 md:bottom-24 left-6 md:left-16 right-6 text-white max-w-4xl">
-              <span className="nav-label text-[10px] md:text-[11px] tracking-[0.25em] text-white/70 block mb-2 md:mb-3">{selectedProperty.location}</span>
-              <h1 className="text-3xl md:text-6xl font-qlassy uppercase tracking-tight leading-none mb-4">
+              <span className="nav-label text-[11px] tracking-[0.25em] text-white/70 block mb-2 md:mb-3">{selectedProperty.location}</span>
+              <h1 className="text-3xl sm:text-4xl md:text-6xl font-qlassy uppercase tracking-tight leading-none mb-4">
                 {lang === 'en' && selectedProperty.titleEn ? selectedProperty.titleEn : selectedProperty.title}
               </h1>
             </div>
@@ -359,8 +373,12 @@ export default function Urbanas() {
             <div className="lg:col-span-7 space-y-16 md:space-y-24">
               <div className="space-y-4 md:space-y-6">
                 <h2 className="text-xs font-bold tracking-[0.2em] uppercase text-gray-400 font-helvetica">{t.overview}</h2>
-                <div className="editorial-description">
-                  {lang === 'en' && selectedProperty.descriptionEn ? selectedProperty.descriptionEn : selectedProperty.description}
+                <div className="editorial-description space-y-4">
+                  {(lang === 'en' && selectedProperty.descriptionEn ? selectedProperty.descriptionEn : selectedProperty.description)
+                    ?.split('\n\n')
+                    .map((paragraph, index) => (
+                      <p key={index}>{paragraph}</p>
+                    ))}
                 </div>
               </div>
 
@@ -387,7 +405,7 @@ export default function Urbanas() {
               <div className="lg:sticky lg:top-32 space-y-8 md:space-y-10 border-t lg:border-t-0 border-gray-100 pt-10 lg:pt-0">
                 <div>
                   <span className="nav-label text-[10px] text-gray-400 block mb-1 md:mb-2">{t.value}</span>
-                  <div className="font-segoe font-light text-3xl md:text-4xl text-gray-900 tracking-tight">
+                  <div className="font-segoe font-light text-4xl text-gray-900 tracking-tight">
                     {selectedProperty.price}
                   </div>
                 </div>
@@ -398,7 +416,10 @@ export default function Urbanas() {
                   <h2 className="text-xs font-bold tracking-[0.2em] uppercase text-gray-400 font-helvetica">{t.features}</h2>
                   <div className="grid grid-cols-2 gap-y-6 gap-x-4 font-segoe text-sm text-gray-700">
                     <div className="flex items-center gap-4 py-2 border-b border-gray-50">
-                      <BedDouble size={20} className="text-gray-400 stroke-[1.5]" />
+                      <span className="icon-tooltip-wrapper">
+                        <BedDouble size={20} className="text-gray-400 stroke-[1.5]" />
+                        <span className="icon-tooltip">{lang === 'en' ? 'Bedrooms' : 'Quartos'}</span>
+                      </span>
                       <div>
                         <span className="text-[10px] text-gray-400 block font-helvetica tracking-wider">
                           {lang === 'en' ? 'BEDROOMS' : 'QUARTOS'}
@@ -409,7 +430,10 @@ export default function Urbanas() {
                       </div>
                     </div>
                     <div className="flex items-center gap-4 py-2 border-b border-gray-50">
-                      <Bath size={20} className="text-gray-400 stroke-[1.5]" />
+                      <span className="icon-tooltip-wrapper">
+                        <Bath size={20} className="text-gray-400 stroke-[1.5]" />
+                        <span className="icon-tooltip">{lang === 'en' ? 'Bathrooms' : 'Banheiros'}</span>
+                      </span>
                       <div>
                         <span className="text-[10px] text-gray-400 block font-helvetica tracking-wider">
                           {lang === 'en' ? 'BATHROOMS' : 'BANHEIROS'}
@@ -418,7 +442,10 @@ export default function Urbanas() {
                       </div>
                     </div>
                     <div className="flex items-center gap-4 py-2 border-b border-gray-50">
-                      <Car size={20} className="text-gray-400 stroke-[1.5]" />
+                      <span className="icon-tooltip-wrapper">
+                        <Car size={20} className="text-gray-400 stroke-[1.5]" />
+                        <span className="icon-tooltip">{lang === 'en' ? 'Parking spaces' : 'Vagas de garagem'}</span>
+                      </span>
                       <div>
                         <span className="text-[10px] text-gray-400 block font-helvetica tracking-wider">
                           {lang === 'en' ? 'PARKING' : 'VAGAS'}
@@ -427,12 +454,27 @@ export default function Urbanas() {
                       </div>
                     </div>
                     <div className="flex items-center gap-4 py-2 border-b border-gray-50">
-                      <Maximize size={20} className="text-gray-400 stroke-[1.5]" />
+                      <span className="icon-tooltip-wrapper">
+                        <Maximize size={20} className="text-gray-400 stroke-[1.5]" />
+                        <span className="icon-tooltip">{lang === 'en' ? 'Built area' : 'Área construída'}</span>
+                      </span>
+                      <div>
+                        <span className="text-[10px] text-gray-400 block font-helvetica tracking-wider">
+                          {lang === 'en' ? 'BUILT AREA' : 'ÁREA CONSTRUÍDA'}
+                        </span>
+                        <span className="font-medium">{selectedProperty.specs.builtArea}</span>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-4 py-2 border-b border-gray-50">
+                      <span className="icon-tooltip-wrapper">
+                        <Square size={20} className="text-gray-400 stroke-[1.5]" />
+                        <span className="icon-tooltip">{lang === 'en' ? 'Total land area' : 'Área total do terreno'}</span>
+                      </span>
                       <div>
                         <span className="text-[10px] text-gray-400 block font-helvetica tracking-wider">
                           {lang === 'en' ? 'TOTAL AREA' : 'ÁREA TOTAL'}
                         </span>
-                        <span className="font-medium">{selectedProperty.specs.size}</span>
+                        <span className="font-medium">{selectedProperty.specs.totalArea}</span>
                       </div>
                     </div>
                   </div>
@@ -445,7 +487,7 @@ export default function Urbanas() {
       ) : (
         <main className={`pt-16 pb-32 transition-all duration-1000 ${isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
           <div className="w-full px-8 md:px-16 mb-20 text-center">
-            <h1 className="text-3xl md:text-4xl font-qlassy mb-4 md:mb-6 uppercase tracking-tighter text-gray-700">
+            <h1 className="text-4xl font-qlassy mb-4 md:mb-6 uppercase tracking-tighter text-gray-700">
               {t.segmentTitle}
             </h1>
             <div className="w-12 h-[1px] bg-gray-300 mx-auto mt-8"></div>
@@ -526,20 +568,39 @@ export default function Urbanas() {
 
                     <div className="flex flex-wrap gap-x-6 gap-y-2 border-t border-gray-100 pt-4">
                       <div className="flex items-center gap-2">
-                        <BedDouble size={18} className="text-gray-500" />
+                        <span className="icon-tooltip-wrapper">
+                          <BedDouble size={18} className="text-gray-500" />
+                          <span className="icon-tooltip">{lang === 'en' ? 'Bedrooms' : 'Quartos'}</span>
+                        </span>
                         <span className="nav-label text-[10px] text-gray-500">{item.specs.beds}</span>
                       </div>
                       <div className="flex items-center gap-2">
-                        <Bath size={18} className="text-gray-500" />
+                        <span className="icon-tooltip-wrapper">
+                          <Bath size={18} className="text-gray-500" />
+                          <span className="icon-tooltip">{lang === 'en' ? 'Bathrooms' : 'Banheiros'}</span>
+                        </span>
                         <span className="nav-label text-[10px] text-gray-500">{item.specs.baths}</span>
                       </div>
                       <div className="flex items-center gap-2">
-                        <Car size={18} className="text-gray-500" />
+                        <span className="icon-tooltip-wrapper">
+                          <Car size={18} className="text-gray-500" />
+                          <span className="icon-tooltip">{lang === 'en' ? 'Parking spaces' : 'Vagas de garagem'}</span>
+                        </span>
                         <span className="nav-label text-[10px] text-gray-500">{item.specs.cars}</span>
                       </div>
                       <div className="flex items-center gap-2">
-                        <Maximize size={18} className="text-gray-500" />
-                        <span className="nav-label text-[10px] text-gray-500">{item.specs.size}</span>
+                        <span className="icon-tooltip-wrapper">
+                          <Maximize size={20} className="text-gray-400 stroke-[1.5]" />
+                          <span className="icon-tooltip">{lang === 'en' ? 'Built area' : 'Área construída'}</span>
+                        </span>
+                        <span className="nav-label text-[10px] text-gray-500">{item.specs.builtArea}</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="icon-tooltip-wrapper">
+                          <Square size={20} className="text-gray-400 stroke-[1.5]" />
+                          <span className="icon-tooltip">{lang === 'en' ? 'Total land area' : 'Área total do terreno'}</span>
+                        </span>
+                        <span className="nav-label text-[10px] text-gray-500">{item.specs.totalArea}</span>
                       </div>
                     </div>
 

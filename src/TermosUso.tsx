@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useOutletContext } from 'react-router-dom';
 
 const translations = {
@@ -28,7 +28,7 @@ const translations = {
     s1Desc: <>By navigating the <strong>A Propriedade</strong> website, you agree to comply with these terms of service, all applicable laws, and regulations. The content provided is intended for the presentation of exclusive properties and architectural projects.</>,
     s2Title: "2. Intellectual Property and License",
     s2Desc: "All visual content, photographic collection, trademarks, and texts present on this site are the exclusive property of A Propriedade. Permission is granted for strictly personal and non-commercial viewing. It is expressly prohibited to:",
-    s2Item1: "Copy, modify, or republicize materials without prior authorization;",
+    s2Item1: "Copy, modify, or republish materials without prior authorization;",
     s2Item2: "Use content for commercial purposes or public display;",
     s2Item3: "Remove any watermarks, copyrights, or proprietary notations from the images.",
     s3Title: "3. Disclaimer",
@@ -44,16 +44,35 @@ interface TermosUsoProps {
 
 export default function TermosUso({ language }: TermosUsoProps) {
   const context = useOutletContext<any>();
-  
-  // Obtém o idioma reativo vindo do App.tsx (props ou outletContext)
-  const lang: 'pt' | 'en' = 
-    language || 
-    (typeof context === 'string' ? context : context?.language) || 
-    (localStorage.getItem('language') as 'pt' | 'en') || 
-    'pt';
+
+  // Obtém o idioma reativo vindo do App.tsx (props ou outletContext), com fallback dinâmico ao localStorage
+  const [lang, setLang] = useState<'pt' | 'en'>(
+    language ||
+    (typeof context === 'string' ? context : context?.language) ||
+    (localStorage.getItem('language') as 'pt' | 'en') ||
+    'pt'
+  );
 
   useEffect(() => {
+    const checkLang = () => {
+      const savedLang = localStorage.getItem('language') as 'pt' | 'en';
+      if (savedLang) {
+        setLang((prevLang) => (prevLang !== savedLang ? savedLang : prevLang));
+      }
+    };
+
+    checkLang();
     window.scrollTo(0, 0);
+
+    const langInterval = setInterval(checkLang, 300);
+    window.addEventListener('storage', checkLang);
+    window.addEventListener('languageChange', checkLang);
+
+    return () => {
+      clearInterval(langInterval);
+      window.removeEventListener('storage', checkLang);
+      window.removeEventListener('languageChange', checkLang);
+    };
   }, []);
 
   const t = translations[lang] || translations.pt;
@@ -71,10 +90,10 @@ export default function TermosUso({ language }: TermosUsoProps) {
         <div className="absolute inset-0 bg-black/40"></div>
 
         <div className="relative z-10 text-center flex flex-col items-center px-4 animate-fadeIn">
-          <span className="text-[10px] md:text-xs font-bold uppercase tracking-[0.3em] text-white/90 mb-4 font-sans drop-shadow-md">
+          <span className="text-xs font-bold uppercase tracking-[0.3em] text-white/90 mb-4 font-sans drop-shadow-md">
             {t.tagline}
           </span>
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-qlassy uppercase tracking-widest text-white drop-shadow-lg">
+          <h1 className="text-6xl font-qlassy uppercase tracking-widest text-white drop-shadow-lg">
             {t.title}
           </h1>
         </div>
@@ -84,7 +103,7 @@ export default function TermosUso({ language }: TermosUsoProps) {
       <div className="max-w-3xl mx-auto px-6 md:px-12 pt-16">
 
         <div className="mb-10 pb-6 border-b border-gray-200">
-          <h2 className="text-xl md:text-2xl font-bold uppercase tracking-[0.1em] text-black font-sans mb-3">
+          <h2 className="text-2xl font-bold uppercase tracking-[0.1em] text-black font-sans mb-3">
             {t.headerTitle}
           </h2>
           <p className="text-[11px] font-bold uppercase tracking-[0.15em] text-gray-500 font-sans">
@@ -92,7 +111,7 @@ export default function TermosUso({ language }: TermosUsoProps) {
           </p>
         </div>
         
-        <div className="space-y-8 font-garamond text-sm md:text-base leading-relaxed text-gray-700">
+        <div className="space-y-8 font-garamond text-base leading-relaxed text-gray-700">
           
           <section className="pt-2">
             <h2 className="text-xs font-bold uppercase tracking-[0.2em] font-sans text-black mb-3">

@@ -1,4 +1,5 @@
 import React, { useEffect, useState, memo } from 'react';
+import { useLocation } from 'react-router-dom';
 import {
   ArrowLeft,
   MapPin,
@@ -27,7 +28,11 @@ const StyleInjector = memo(() => (
 
     h1, h2, h3 { font-family: 'Qlassy', serif !important; }
     .nav-label, .btn-label { font-family: 'NeueHelvetica', sans-serif !important; text-transform: uppercase; }
-    
+
+    .icon-tooltip-wrapper { position: relative; display: inline-flex; align-items: center; justify-content: center; }
+    .icon-tooltip { position: absolute; left: 50%; bottom: calc(100% + 8px); transform: translateX(-50%) translateY(4px); background: #1a1a1a; color: white; padding: 6px 9px; border-radius: 3px; font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif; font-size: 10px; line-height: 1.2; white-space: nowrap; opacity: 0; visibility: hidden; pointer-events: none; transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s ease; z-index: 50; box-shadow: 0 4px 12px rgba(0,0,0,0.12); }
+    .icon-tooltip-wrapper:hover .icon-tooltip { opacity: 1; visibility: visible; transform: translateX(-50%) translateY(0); }
+
     .editorial-description {
       font-family: 'EB Garamond', serif !important;
       font-size: 1.1rem !important;
@@ -152,7 +157,7 @@ export default function Terrenos() {
     {
       id: 1,
       title: "Condomínio Tamboré",
-      titleEn: "Exclusive Plot in Gated Community",
+      titleEn: "Tamboré Gated Community",
       location: "Jaguariúna, SP",
       price: "R$ 480.000,00",
       images: [
@@ -175,7 +180,7 @@ export default function Terrenos() {
     {
       id: 2,
       title: "Condomínio - Fazenda da Grama",
-      titleEn: "Plot in Prime Area",
+      titleEn: "Fazenda da Grama Gated Community",
       location: "Itupeva, SP",
       price: "R$ 6.899.900,00",
       images: [
@@ -198,7 +203,7 @@ export default function Terrenos() {
     {
       id: 3,
       title: "Condomínio - Alphaville Dom Pedro II",
-      titleEn: "Panoramic Plot",
+      titleEn: "Alphaville Dom Pedro II Gated Community",
       location: "Campinas, SP",
       price: "R$ 1.460.000,00",
      images: [
@@ -260,6 +265,16 @@ export default function Terrenos() {
     window.scrollTo(0, 0);
   };
 
+  const routerLocation = useLocation();
+  useEffect(() => {
+    const openId = (routerLocation.state as { openId?: number } | null)?.openId;
+    if (openId) {
+      const match = properties.find((p) => p.id === openId);
+      if (match) handleOpenDetails(match);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [routerLocation.state]);
+
   const handleCloseDetails = () => {
     setSelectedProperty(null);
     setIsLightboxOpen(false);
@@ -279,7 +294,7 @@ export default function Terrenos() {
         <button
           onClick={scrollToTop}
           className="fixed bottom-8 right-8 z-40 bg-white text-gray-800 w-12 h-12 rounded-none shadow-[0_4px_20px_rgba(0,0,0,0.08)] hover:scale-105 transition-all duration-300 flex items-center justify-center animate-fadeIn border border-gray-100"
-          aria-label="Voltar ao topo"
+          aria-label={lang === 'en' ? 'Back to top' : 'Voltar ao topo'}
         >
           <ArrowUp size={20} className="stroke-[1.5]" />
         </button>
@@ -305,8 +320,8 @@ export default function Terrenos() {
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/10" />
             <div className="absolute bottom-12 md:bottom-24 left-6 md:left-16 right-6 text-white max-w-4xl">
-              <span className="nav-label text-[10px] md:text-[11px] tracking-[0.25em] text-white/70 block mb-2 md:mb-3">{selectedProperty.location}</span>
-              <h1 className="text-3xl md:text-6xl font-qlassy uppercase tracking-tight leading-none mb-4">
+              <span className="nav-label text-[11px] tracking-[0.25em] text-white/70 block mb-2 md:mb-3">{selectedProperty.location}</span>
+              <h1 className="text-3xl sm:text-4xl md:text-6xl font-qlassy uppercase tracking-tight leading-none mb-4">
                 {lang === 'en' && selectedProperty.titleEn ? selectedProperty.titleEn : selectedProperty.title}
               </h1>
             </div>
@@ -316,8 +331,12 @@ export default function Terrenos() {
             <div className="lg:col-span-7 space-y-16 md:space-y-24">
               <div className="space-y-4 md:space-y-6">
                 <h2 className="text-xs font-bold tracking-[0.2em] uppercase text-gray-400 font-helvetica">{t.overview}</h2>
-                <div className="editorial-description">
-                  {lang === 'en' && selectedProperty.descriptionEn ? selectedProperty.descriptionEn : selectedProperty.description}
+                <div className="editorial-description space-y-4">
+                  {(lang === 'en' && selectedProperty.descriptionEn ? selectedProperty.descriptionEn : selectedProperty.description)
+                    ?.split('\n\n')
+                    .map((paragraph, index) => (
+                      <p key={index}>{paragraph}</p>
+                    ))}
                 </div>
               </div>
 
@@ -344,7 +363,7 @@ export default function Terrenos() {
               <div className="lg:sticky lg:top-32 space-y-8 md:space-y-10 border-t lg:border-t-0 border-gray-100 pt-10 lg:pt-0">
                 <div>
                   <span className="nav-label text-[10px] text-gray-400 block mb-1 md:mb-2">{t.value}</span>
-                  <div className="font-segoe font-light text-3xl md:text-4xl text-gray-900 tracking-tight">
+                  <div className="font-segoe font-light text-4xl text-gray-900 tracking-tight">
                     {selectedProperty.price}
                   </div>
                 </div>
@@ -355,7 +374,10 @@ export default function Terrenos() {
                   <h2 className="text-xs font-bold tracking-[0.2em] uppercase text-gray-400 font-helvetica">{t.features}</h2>
                   <div className="grid grid-cols-1 gap-y-6 gap-x-4 font-segoe text-sm text-gray-700">
                     <div className="flex items-center gap-4 py-2 border-b border-gray-50">
-                      <Maximize size={20} className="text-gray-400 stroke-[1.5]" />
+                      <span className="icon-tooltip-wrapper">
+                        <Maximize size={20} className="text-gray-400 stroke-[1.5]" />
+                        <span className="icon-tooltip">{lang === 'en' ? 'Total land area' : 'Área total do terreno'}</span>
+                      </span>
                       <div>
                         <span className="text-[10px] text-gray-400 block font-helvetica tracking-wider">
                           {lang === 'en' ? 'TOTAL AREA' : 'ÁREA TOTAL'}
@@ -373,7 +395,7 @@ export default function Terrenos() {
       ) : (
         <main className={`pt-16 pb-32 transition-all duration-1000 ${isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
           <div className="w-full px-8 md:px-16 mb-20 text-center">
-            <h1 className="text-3xl md:text-4xl font-qlassy mb-4 md:mb-6 uppercase tracking-tighter text-gray-700">
+            <h1 className="text-4xl font-qlassy mb-4 md:mb-6 uppercase tracking-tighter text-gray-700">
               {t.segmentTitle}
             </h1>
             <div className="w-12 h-[1px] bg-gray-300 mx-auto mt-8"></div>
@@ -454,7 +476,10 @@ export default function Terrenos() {
 
                     <div className="flex flex-wrap gap-x-6 gap-y-2 border-t border-gray-100 pt-4">
                       <div className="flex items-center gap-2">
-                        <Maximize size={18} className="text-gray-500" />
+                        <span className="icon-tooltip-wrapper">
+                          <Maximize size={18} className="text-gray-500" />
+                          <span className="icon-tooltip">{lang === 'en' ? 'Total land area' : 'Área total do terreno'}</span>
+                        </span>
                         <span className="nav-label text-[10px] text-gray-500">{item.specs.size}</span>
                       </div>
                     </div>

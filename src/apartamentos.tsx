@@ -41,16 +41,35 @@ export default function Apartamentos({ language }: ApartamentosProps) {
   const [isLoaded, setIsLoaded] = useState(false);
   const context = useOutletContext<any>();
 
-  // Obtém o idioma reativo vindo do App.tsx (props ou outletContext)
-  const lang: 'pt' | 'en' = 
-    language || 
-    (typeof context === 'string' ? context : context?.language) || 
-    (localStorage.getItem('language') as 'pt' | 'en') || 
-    'pt';
+  // Obtém o idioma reativo vindo do App.tsx (props ou outletContext), com fallback dinâmico ao localStorage
+  const [lang, setLang] = useState<'pt' | 'en'>(
+    language ||
+    (typeof context === 'string' ? context : context?.language) ||
+    (localStorage.getItem('language') as 'pt' | 'en') ||
+    'pt'
+  );
 
   useEffect(() => {
+    const checkLang = () => {
+      const savedLang = localStorage.getItem('language') as 'pt' | 'en';
+      if (savedLang) {
+        setLang((prevLang) => (prevLang !== savedLang ? savedLang : prevLang));
+      }
+    };
+
+    checkLang();
     setIsLoaded(true);
     window.scrollTo(0, 0);
+
+    const langInterval = setInterval(checkLang, 300);
+    window.addEventListener('storage', checkLang);
+    window.addEventListener('languageChange', checkLang);
+
+    return () => {
+      clearInterval(langInterval);
+      window.removeEventListener('storage', checkLang);
+      window.removeEventListener('languageChange', checkLang);
+    };
   }, []);
 
   const t = translations[lang] || translations.pt;
@@ -77,7 +96,7 @@ export default function Apartamentos({ language }: ApartamentosProps) {
           <span className="nav-label inline-block text-[#00B6E3] text-[10px] tracking-[0.5em] font-bold mb-4">
             {t.comingSoon}
           </span>
-          <h1 className="text-5xl md:text-4xl font-qlassy mb-6 uppercase tracking-tighter text-gray-700">
+          <h1 className="text-4xl font-qlassy mb-6 uppercase tracking-tighter text-gray-700">
             {t.title}
           </h1>
           <div className="flex justify-center mb-6">
@@ -89,7 +108,7 @@ export default function Apartamentos({ language }: ApartamentosProps) {
         <section className="container mx-auto px-6 max-w-2xl text-center">
           
           <div className="w-12 h-[1px] bg-gray-300 mx-auto mt-8"></div>
-          <p className="font-garamond text-gray-500 text-lg md:text-xl leading-relaxed mb-10 mt-8">
+          <p className="font-garamond text-gray-500 text-xl leading-relaxed mb-10 mt-8">
             {t.desc}
           </p>
 

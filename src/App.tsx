@@ -1086,17 +1086,17 @@ const HomePage = ({ lang }: { lang: 'pt' | 'en' }) => {
             <Reveal delay={500} className="grid grid-cols-3 gap-6 text-center">
               <div>
                 <p className="font-qlassy text-3xl sm:text-4xl md:text-5xl leading-none tracking-tighter">+<Counter end={12} /></p>
-                <p className="font-['HeadingNow',sans-serif] text-[13px] sm:text-[15px] md:text-[17px] uppercase tracking-widest leading-tight text-black mt-3 flex items-center justify-center text-center min-h-[2.5em] md:block md:min-h-0">{t.about.stats[0]}</p>
+                <p className="font-['HeadingNow',sans-serif] text-[13px] sm:text-[15px] md:text-[17px] uppercase tracking-widest leading-tight text-black -mt-0.5 flex items-start justify-center text-center min-h-[2.5em] md:block md:min-h-0">{t.about.stats[0]}</p>
               </div>
               <div>
                 <p className="font-qlassy text-3xl sm:text-4xl md:text-5xl leading-none tracking-tighter" style={{ color: cyanBrand }}>
                   +<Counter end={30} />mi
                 </p>
-                <p className="font-['HeadingNow',sans-serif] text-[13px] sm:text-[15px] md:text-[17px] uppercase tracking-widest leading-tight text-black mt-3 flex items-center justify-center text-center min-h-[2.5em] md:block md:min-h-0">{t.about.stats[1]}</p>
+                <p className="font-['HeadingNow',sans-serif] text-[13px] sm:text-[15px] md:text-[17px] uppercase tracking-widest leading-tight text-black -mt-0.5 flex items-start justify-center text-center min-h-[2.5em] md:block md:min-h-0">{t.about.stats[1]}</p>
               </div>
               <div>
                 <p className="font-qlassy text-3xl sm:text-4xl md:text-5xl leading-none tracking-tighter"><Counter end={100} />%</p>
-                <p className="font-['HeadingNow',sans-serif] text-[13px] sm:text-[15px] md:text-[17px] uppercase tracking-widest leading-tight text-black mt-3 flex items-center justify-center text-center min-h-[2.5em] md:block md:min-h-0">
+                <p className="font-['HeadingNow',sans-serif] text-[13px] sm:text-[15px] md:text-[17px] uppercase tracking-widest leading-tight text-black -mt-0.5 flex items-start justify-center text-center min-h-[2.5em] md:block md:min-h-0">
                   {lang === 'pt' ? 'Foco em Luxo' : 'Luxury Focus'}
                 </p>
               </div>

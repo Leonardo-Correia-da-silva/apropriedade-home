@@ -102,7 +102,7 @@ export const searchProperties: SearchProperty[] = [
     titleEn: "House in the Cidade Jardim Neighborhood, São Paulo",
     location: "São Paulo, SP",
     price: "R$ 17.990.000,00",
-    image: "/categorias/casas_urbanas/cidade-jardim/7.jpg",
+    image: "/categorias/casas_urbanas/cidade-jardim/16.jpg",
     beds: 5, baths: 6, cars: 3, totalArea: "550m²", builtArea: "641m²"
   },
   {
@@ -110,13 +110,12 @@ export const searchProperties: SearchProperty[] = [
     categoryPath: "/casasurbanas",
     categoryLabel: "Casas Urbanas",
     categoryLabelEn: "Urban Houses",
-    title: "Villaggio Via Condotti, Gramado",
-    titleEn: "Villaggio Via Condotti, Gramado",
+    title: "Casa no Condomínio Villagio Via Condotti, bairro Gramado, em Campinas",
+    titleEn: "House in the Villagio Via Condotti Condominium, Gramado Neighborhood, Campinas",
     location: "Campinas, SP",
     price: "R$ 3.500.000,00",
-    image: "/categorias/casas_urbanas/villaggio/83.jpg",
-    beds: 5, baths: 7, cars: 6, totalArea: "691m²",
-    sold: true
+    image: "/categorias/casas_urbanas/villaggio/37.jpg",
+    beds: 5, baths: 7, cars: 6, totalArea: "691m²", builtArea: "449m²"
   },
   {
     id: 1,

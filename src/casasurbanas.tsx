@@ -231,12 +231,12 @@ export default function Urbanas() {
       location: "São Paulo, SP",
       price: "R$ 17.990.000,00",
       images: [
+        "/categorias/casas_urbanas/cidade-jardim/16.jpg",
         "/categorias/casas_urbanas/cidade-jardim/7.jpg",
         "/categorias/casas_urbanas/cidade-jardim/2.jpg",
         "/categorias/casas_urbanas/cidade-jardim/1.jpg",
         "/categorias/casas_urbanas/cidade-jardim/8.jpg",
         "/categorias/casas_urbanas/cidade-jardim/45.jpg",
-        "/categorias/casas_urbanas/cidade-jardim/29.jpg",
       ],
       gallery: Array.from({ length: 48 }, (_, i) =>
         `/categorias/casas_urbanas/cidade-jardim/${i + 1}.jpg`
@@ -247,24 +247,24 @@ export default function Urbanas() {
     },
     {
       id: 7,
-      title: "Villaggio Via Condotti, Gramado (VENDIDO)",
-      titleEn: "Villaggio Via Condotti, Gramado (SOLD)",
+      title: "Casa no Condomínio Villagio Via Condotti, bairro Gramado, em Campinas",
+      titleEn: "House in the Villagio Via Condotti Condominium, Gramado Neighborhood, Campinas",
       location: "Campinas, SP",
       price: "R$ 3.500.000,00",
       images: [
-        "/categorias/casas_urbanas/villaggio/83.jpg",
-        "/categorias/casas_urbanas/villaggio/70.jpg",
-        "/categorias/casas_urbanas/villaggio/47.jpg",
+        "/categorias/casas_urbanas/villaggio/37.jpg",
+        "/categorias/casas_urbanas/villaggio/1.jpg",
+        "/categorias/casas_urbanas/villaggio/10.jpg",
         "/categorias/casas_urbanas/villaggio/5.jpg",
         "/categorias/casas_urbanas/villaggio/26.jpg",
         "/categorias/casas_urbanas/villaggio/25.jpg",
       ],
-      gallery: Array.from({ length: 84 }, (_, i) =>
+      gallery: Array.from({ length: 38 }, (_, i) =>
         `/categorias/casas_urbanas/villaggio/${i + 1}.jpg`
       ),
-      specs: { beds: 5, baths: 7, cars: 6, builtArea: "", totalArea: "691m²" },
-      description: "[Imóvel Vendido] Imponente casa no Condomínio Villaggio Via Condotti, no tradicional bairro Gramado em Campinas. Com distribuição fluida, 4 suítes confortáveis, riqueza em armários sob medida e um convidativo deck com piscina para os dias de sol, a propriedade oferece uma experiência de morar única, cercada por tranquilidade e segurança.",
-      descriptionEn: "[Sold Property] An impressive home in the Villaggio Via Condotti Condominium, in Campinas' traditional Gramado neighborhood. Featuring a fluid layout, 4 comfortable suites, abundant custom storage, and an inviting pool deck for sunny days, this property offered a unique living experience surrounded by peace and security."
+      specs: { beds: 5, baths: 7, cars: 6, builtArea: "449m²", totalArea: "691m²" },
+      description: "O sobrado, dividido em dois pavimentos, possui terreno independente. O piso térreo conta com hall de entrada social, lavabo, sala de TV / home theater ou escritório / home office, living para diversos ambientes, sala de lareira, sala de jantar e estar, cozinha grande, despensa, sala de almoço, copa, área de serviço / lavanderia e quarto de serviço com banheiro independente. O piso do living, sala de jantar, estar e de TV / escritório é de madeira de alta qualidade, assim como nas suítes e área íntima. Grandes aberturas e portas dão acesso para a varanda externa. Esse é um ambiente privativo muito agradável e envolvido por jardins. O quintal externo lateral direito pode ser usado como área de serviço para secagem de roupas, pois dá acesso para a lavanderia e dormitório de empregada / serviço.\n\nO quintal elevado da área de lazer conta com piscina privativa, solarium, espaço gourmet coberto com churrasqueira privativa e banheiro de apoio. O segundo andar é onde fica toda área íntima. Ao chegar pela escada de acesso, já encontra-se a ala íntima - que pode ser usada também como sala de TV / home theater. São quatro suítes bem espaçosas, todas com armários grandes e piso de madeira. A suíte principal conta com closet, banheiro com banheira e varanda espaçosa que dá para a frente do imóvel. Ainda, conta com a área íntima, que pode ser utilizada como sala íntima ou sala de TV, duas suítes e dois dormitórios que compartilham um banheiro social.\n\nO condomínio é completo, contando com segurança e portaria presencial com serviço de identificação de acesso e eclusa de segurança 24 horas, área de lazer incluindo salão de festas grande, espaço gourmet com churrasqueira, piscina adulto e infantil, quadra de tênis, campo de futebol, academia / fitness e pista de caminhada / cooper. As áreas de lazer incluem piscina grande adulta e infantil, salão de festas, espaço gourmet, academia, quadra de tênis, campo de futebol e playground. Casas com terrenos independentes, com privacidade e segurança - são as características comuns do Villagio Via Condotti. A poucos minutos você conta com toda conveniência do Gramado Mall, desde farmácia, academia, açougue, empório, salão de beleza, caixa eletrônico, cafeteria, e muito mais!",
+      descriptionEn: "This two-story house sits on its own independent lot. The ground floor features a formal entrance hall, powder room, TV room / home theater or office / home office, a living room with several areas, fireplace room, dining and living rooms, a large kitchen, pantry, breakfast room, butler's pantry, service area / laundry room, and a staff bedroom with its own bathroom. The living room, dining room, lounge, and TV room / office have high-quality hardwood floors, as do the suites and private area. Large openings and doors lead to the outdoor veranda, a very pleasant private space surrounded by gardens. The side yard on the right can be used as a service area for drying clothes, as it provides access to the laundry room and staff bedroom.\n\nThe raised backyard leisure area features a private pool, solarium, covered gourmet area with a private barbecue grill, and a support bathroom. The second floor houses the entire private area. Arriving by the staircase, you reach the private wing, which can also be used as a TV room / home theater. There are four very spacious suites, all with large closets and hardwood floors. The master suite has a walk-in closet, a bathroom with a bathtub, and a spacious balcony facing the front of the property. The floor also includes the private area, which can be used as a family room or TV room, two suites, and two bedrooms that share a bathroom.\n\nThe condominium is complete, offering security and a staffed gatehouse with access identification and a 24-hour security airlock, as well as leisure areas including a large party hall, gourmet area with barbecue grill, adult and children's pools, tennis court, soccer field, gym / fitness center, walking / jogging track, and playground. Houses on independent lots, with privacy and security, are the hallmark of Villagio Via Condotti. Just minutes away, you have all the convenience of Gramado Mall, from a pharmacy, gym, butcher shop, gourmet market, beauty salon, ATM, and café, and much more!"
     }
   ];
 
@@ -428,7 +428,7 @@ export default function Urbanas() {
                           {lang === 'en' ? 'BEDROOMS' : 'QUARTOS'}
                         </span>
                         <span className="font-medium">
-                          {selectedProperty.specs.beds} {lang === 'en' ? 'Suites' : 'Suítes'}
+                          {selectedProperty.specs.beds}
                         </span>
                       </div>
                     </div>
@@ -441,7 +441,7 @@ export default function Urbanas() {
                         <span className="text-[10px] text-gray-400 block font-helvetica tracking-wider">
                           {lang === 'en' ? 'BATHROOMS' : 'BANHEIROS'}
                         </span>
-                        <span className="font-medium">{selectedProperty.specs.baths} {lang === 'en' ? 'Bathrooms' : 'Banheiros'}</span>
+                        <span className="font-medium">{selectedProperty.specs.baths}</span>
                       </div>
                     </div>
                     <div className="flex items-center gap-4 py-2 border-b border-gray-50">
@@ -453,7 +453,7 @@ export default function Urbanas() {
                         <span className="text-[10px] text-gray-400 block font-helvetica tracking-wider">
                           {lang === 'en' ? 'PARKING' : 'VAGAS'}
                         </span>
-                        <span className="font-medium">{selectedProperty.specs.cars} {lang === 'en' ? 'Spaces' : 'Vagas'}</span>
+                        <span className="font-medium">{selectedProperty.specs.cars}</span>
                       </div>
                     </div>
                     <div className="flex items-center gap-4 py-2 border-b border-gray-50">

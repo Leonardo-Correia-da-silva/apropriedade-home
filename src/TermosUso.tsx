@@ -90,10 +90,7 @@ export default function TermosUso({ language }: TermosUsoProps) {
         <div className="absolute inset-0 bg-black/40"></div>
 
         <div className="relative z-10 text-center flex flex-col items-center px-4 animate-fadeIn">
-          <span className="text-xs font-bold uppercase tracking-[0.3em] text-white/90 mb-4 font-sans drop-shadow-md">
-            {t.tagline}
-          </span>
-          <h1 className="text-6xl font-qlassy uppercase tracking-widest text-white drop-shadow-lg">
+          <h1 className="text-3xl sm:text-4xl md:text-6xl font-qlassy uppercase tracking-tight leading-none text-white drop-shadow-lg">
             {t.title}
           </h1>
         </div>
@@ -103,29 +100,29 @@ export default function TermosUso({ language }: TermosUsoProps) {
       <div className="max-w-3xl mx-auto px-6 md:px-12 pt-16">
 
         <div className="mb-10 pb-6 border-b border-gray-200">
-          <h2 className="text-2xl font-bold uppercase tracking-[0.1em] text-black font-sans mb-3">
+          <h2 className="text-2xl font-garamond font-semibold text-black mb-3">
             {t.headerTitle}
           </h2>
-          <p className="text-[11px] font-bold uppercase tracking-[0.15em] text-gray-500 font-sans">
+          <p className="text-sm font-garamond text-gray-500">
             {t.lastModified}
           </p>
         </div>
         
-        <div className="space-y-8 font-garamond text-base leading-relaxed text-gray-700">
+        <div className="space-y-8 font-garamond text-[1.1rem] leading-[1.65] text-[#555555]">
           
           <section className="pt-2">
-            <h2 className="text-xs font-bold uppercase tracking-[0.2em] font-sans text-black mb-3">
+            <h2 className="text-lg font-garamond font-semibold text-black mb-3">
               {t.s1Title}
             </h2>
             <p>{t.s1Desc}</p>
           </section>
 
           <section className="pt-2">
-            <h2 className="text-xs font-bold uppercase tracking-[0.2em] font-sans text-black mb-3">
+            <h2 className="text-lg font-garamond font-semibold text-black mb-3">
               {t.s2Title}
             </h2>
             <p className="mb-3">{t.s2Desc}</p>
-            <ul className="list-disc pl-5 space-y-1 text-gray-600">
+            <ul className="list-disc pl-5 space-y-1">
               <li>{t.s2Item1}</li>
               <li>{t.s2Item2}</li>
               <li>{t.s2Item3}</li>
@@ -133,14 +130,14 @@ export default function TermosUso({ language }: TermosUsoProps) {
           </section>
 
           <section className="pt-2">
-            <h2 className="text-xs font-bold uppercase tracking-[0.2em] font-sans text-black mb-3">
+            <h2 className="text-lg font-garamond font-semibold text-black mb-3">
               {t.s3Title}
             </h2>
             <p className="mb-3">{t.s3Desc}</p>
           </section>
 
           <section className="pt-2">
-            <h2 className="text-xs font-bold uppercase tracking-[0.2em] font-sans text-black mb-3">
+            <h2 className="text-lg font-garamond font-semibold text-black mb-3">
               {t.s4Title}
             </h2>
             <p>{t.s4Desc}</p>

@@ -73,11 +73,11 @@ const translations = {
   }
 };
 
-const heroContent = [
-  { type: 'image', url: "/hero/hero4.jpg" },
-  { type: 'image', url: "/hero/hero9.jpg" },
-  { type: 'image', url: "/hero/hero1.jpg" },
-  { type: 'image', url: "/hero/hero12.jpg" },
+const heroContent: { type: string; url: string; link: string; openId?: number }[] = [
+  { type: 'image', url: "/hero/hero4.jpg", link: "/casasurbanas", openId: 1 },
+  { type: 'image', url: "/hero/hero9.jpg", link: "/casadecampoemontanha" },
+  { type: 'image', url: "/hero/hero1.jpg", link: "/casasurbanas" },
+  { type: 'image', url: "/hero/hero12.jpg", link: "/casasurbanas" },
 ];
 
 const instagramUrl = "https://www.instagram.com/apropriedadeimoveis?igsh=MTh3dDlqYmozdXQ3eA==";
@@ -935,6 +935,7 @@ const Reveal = ({ children, className = "", delay = 0 }: { children: React.React
 // --- HERO INTEGRADO ---
 const IntegratedHero = ({ lang }: { lang: 'pt' | 'en' }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const navigate = useNavigate();
   const t = translations[lang];
 
   useEffect(() => {
@@ -981,7 +982,10 @@ const IntegratedHero = ({ lang }: { lang: 'pt' | 'en' }) => {
                   <h2 className="text-white text-3xl sm:text-4xl md:text-5xl font-extralight max-w-2xl leading-tight mb-4 md:mb-6 font-qlassy uppercase">
                     {currentTitle}
                   </h2>
-                  <button className="border border-white text-white px-5 py-2 rounded-full text-[11px] tracking-widest uppercase hover:bg-white hover:text-black transition-all duration-300">
+                  <button
+                    type="button"
+                    onClick={() => navigate(item.link, item.openId ? { state: { openId: item.openId } } : undefined)}
+                    className="border border-white text-white px-5 py-2 rounded-full text-[11px] tracking-widest uppercase hover:bg-white hover:text-black transition-all duration-300">
                     {lang === 'pt' ? 'SAIBA MAIS' : 'LEARN MORE'}
                   </button>
                 </Reveal>
@@ -1082,17 +1086,17 @@ const HomePage = ({ lang }: { lang: 'pt' | 'en' }) => {
             <Reveal delay={500} className="grid grid-cols-3 gap-6 text-center">
               <div>
                 <p className="font-qlassy text-3xl sm:text-4xl md:text-5xl leading-none tracking-tighter">+<Counter end={12} /></p>
-                <p className="font-qlassy text-[11px] sm:text-[13px] md:text-[15px] uppercase tracking-wide leading-tight text-black md:text-gray-500 mt-3 flex items-center justify-center text-center min-h-[2.5em] md:block md:min-h-0">{t.about.stats[0]}</p>
+                <p className="font-['HeadingNow',sans-serif] text-[13px] sm:text-[15px] md:text-[17px] uppercase tracking-widest leading-tight text-black mt-3 flex items-center justify-center text-center min-h-[2.5em] md:block md:min-h-0">{t.about.stats[0]}</p>
               </div>
               <div>
                 <p className="font-qlassy text-3xl sm:text-4xl md:text-5xl leading-none tracking-tighter" style={{ color: cyanBrand }}>
                   +<Counter end={30} />mi
                 </p>
-                <p className="font-qlassy text-[11px] sm:text-[13px] md:text-[15px] uppercase tracking-wide leading-tight text-black md:text-gray-500 mt-3 flex items-center justify-center text-center min-h-[2.5em] md:block md:min-h-0">{t.about.stats[1]}</p>
+                <p className="font-['HeadingNow',sans-serif] text-[13px] sm:text-[15px] md:text-[17px] uppercase tracking-widest leading-tight text-black mt-3 flex items-center justify-center text-center min-h-[2.5em] md:block md:min-h-0">{t.about.stats[1]}</p>
               </div>
               <div>
                 <p className="font-qlassy text-3xl sm:text-4xl md:text-5xl leading-none tracking-tighter"><Counter end={100} />%</p>
-                <p className="font-qlassy text-[11px] sm:text-[13px] md:text-[15px] uppercase tracking-wide leading-tight text-black md:text-gray-500 mt-3 flex items-center justify-center text-center min-h-[2.5em] md:block md:min-h-0">
+                <p className="font-['HeadingNow',sans-serif] text-[13px] sm:text-[15px] md:text-[17px] uppercase tracking-widest leading-tight text-black mt-3 flex items-center justify-center text-center min-h-[2.5em] md:block md:min-h-0">
                   {lang === 'pt' ? 'Foco em Luxo' : 'Luxury Focus'}
                 </p>
               </div>

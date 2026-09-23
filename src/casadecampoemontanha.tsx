@@ -347,7 +347,7 @@ descriptionEn: "The estate, spanning approximately 55,000 m², is located atop a
             
             <div className="lg:col-span-7 space-y-16 md:space-y-24">
               <div className="space-y-4 md:space-y-6">
-                <h2 className="text-xs font-bold tracking-[0.2em] uppercase text-gray-400 font-helvetica">{t.overview}</h2>
+                <h2 className="text-xs tracking-[0.2em] uppercase text-gray-400 font-qlassy">{t.overview}</h2>
                 <div className="editorial-description space-y-4">
                   {(lang === 'en' && selectedProperty.descriptionEn ? selectedProperty.descriptionEn : selectedProperty.description)
                     ?.split('\n\n')

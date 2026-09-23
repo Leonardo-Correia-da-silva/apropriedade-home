@@ -166,7 +166,7 @@ export default function Urbanas() {
       title: "Mansão no condomínio, Alphaville Campinas",
       titleEn: "Mansion in the Condominium, Alphaville Campinas",
       location: "Campinas, SP",
-      price: "R$ 22.900.000",
+      price: "R$ 22.900.000,00",
       images: [
         "/categorias/casas_urbanas/neoclassica-alphavile/capa1.jpg",
         "/categorias/casas_urbanas/neoclassica-alphavile/capa2.jpg",
@@ -226,31 +226,31 @@ export default function Urbanas() {
     },
     {
       id: 6,
-      title: "Parque Portugal, Taquaral",
-      titleEn: "Parque Portugal, Taquaral",
-      location: "Campinas, SP",
-      price: "R$ 2.500.000",
+      title: "Casa no bairro Cidade Jardim, em São Paulo",
+      titleEn: "House in the Cidade Jardim Neighborhood, São Paulo",
+      location: "São Paulo, SP",
+      price: "R$ 17.990.000,00",
       images: [
-        "/categorias/casas_urbanas/parqueportugal/52.jpg",
-        "/categorias/casas_urbanas/parqueportugal/6.jpg",
-        "/categorias/casas_urbanas/parqueportugal/11.jpg",
-        "/categorias/casas_urbanas/parqueportugal/21.jpg",
-        "/categorias/casas_urbanas/parqueportugal/24.jpg",
-        "/categorias/casas_urbanas/parqueportugal/59.jpg",
+        "/categorias/casas_urbanas/cidade-jardim/7.jpg",
+        "/categorias/casas_urbanas/cidade-jardim/2.jpg",
+        "/categorias/casas_urbanas/cidade-jardim/1.jpg",
+        "/categorias/casas_urbanas/cidade-jardim/8.jpg",
+        "/categorias/casas_urbanas/cidade-jardim/45.jpg",
+        "/categorias/casas_urbanas/cidade-jardim/29.jpg",
       ],
-      gallery: Array.from({ length: 59 }, (_, i) =>
-        `/categorias/casas_urbanas/parqueportugal/${i + 1}.jpg`
+      gallery: Array.from({ length: 48 }, (_, i) =>
+        `/categorias/casas_urbanas/cidade-jardim/${i + 1}.jpg`
       ),
-      specs: { beds: 4, baths: 6, cars: 4, builtArea: "", totalArea: "350m²" },
-      description: "Uma residência charmosa no cobiçado Condomínio Residências Parque Portugal, a poucos minutos da Lagoa do Taquaral. O imóvel se destaca pelos seus ambientes sociais fluídos, piso em madeira, excelente iluminação natural, 4 dormitórios (2 suítes) e 4 vagas, oferecendo máxima privacidade e segurança em um dos endereços mais desejados de Campinas.",
-      descriptionEn: "A charming residence in the highly sought-after Residências Parque Portugal Condominium, just minutes from the Taquaral Lagoon. The property stands out for its fluid social spaces, hardwood flooring, abundant natural light, 4 bedrooms (2 suites), and 4 parking spaces, offering ultimate privacy and security in one of Campinas' most desirable locations."
+      specs: { beds: 5, baths: 6, cars: 3, builtArea: "641m²", totalArea: "550m²" },
+      description: "Casa Moderna recém construída (2024) disponível para venda em dos melhores bairros de São Paulo - o Cidade Jardim. Assinada por renomado escritório de arquitetura, que priorizou a integração dos ambientes, que foram preenchidos por uma paleta de cores suaves, claras e acolhedoras, cheios de muita luz e ventilação naturais. Materiais naturais, como a pedra, mármore e madeira, com destaque para a lareira na sala de estar, com pedras naturais nobres geometricamente assentadas.\n\nA cozinha com ilha central, fogão italiano e marcenaria sob medida em tom verde musgo, pode ser integrada ou isolada das salas de jantar e estar, através de painéis de madeira e vidro que se movimentam de um lado ao outro, instalados do chão ao teto, formando uma eclusa na cozinha, sem perder a visibilidade, além de dar um tom charmoso e sofisticado ao ambiente.\n\nPlanta inteligente, ambientes integrados, muita luz e ventilação naturais, distribuída em três pavimentos: garagem, academia, sauna, escritório e suíte de serviço, segundo pavimento com uma suíte, sala de TV independente, bar, lavabo, cozinha com ilha central integrada com o living, que também é integrado com o quintal privativo com piscina, espaço gourmet com churrasqueira, jardim, redário, e terceiro pavimento com três suítes, hall íntimo e biblioteca.\n\nEscritório, academia e estúdio, núcleo de serviços com dormitório, bar, home theater, espaço gourmet com churrasqueira, piscina e solarium. Um verdadeiro refúgio contemporâneo dentro da maior cidade da América Latina, a pouquíssimos minutos dos shoppings Cidade Jardim e JK, além de fácil acesso aos principais destinos gastronômicos, de entretenimento e financeiros da cidade.",
+      descriptionEn: "Newly built modern house (2024) available for sale in one of the best neighborhoods in São Paulo - Cidade Jardim. Designed by a renowned architecture firm that prioritized the integration of spaces, filled with a palette of soft, light, and welcoming colors and abundant natural light and ventilation. Natural materials such as stone, marble, and wood stand out, highlighted by the living room fireplace, built with noble natural stones laid in a geometric pattern.\n\nThe kitchen, with a central island, an Italian range, and custom moss-green cabinetry, can be integrated with or separated from the dining and living rooms through floor-to-ceiling wood and glass panels that slide from one side to the other, creating an enclosure around the kitchen without losing visibility, while adding a charming and sophisticated touch to the space.\n\nA smart floor plan with integrated spaces and plenty of natural light and ventilation, distributed over three floors: the first with the garage, gym, sauna, office, and staff suite; the second with one suite, an independent TV room, bar, powder room, and a kitchen with a central island integrated with the living room, which in turn opens onto the private backyard with a pool, gourmet area with barbecue grill, garden, and hammock area; and the third with three suites, a private hall, and a library.\n\nOffice, gym and studio, service area with bedroom, bar, home theater, gourmet area with barbecue grill, pool, and solarium. A true contemporary retreat in the largest city in Latin America, just minutes from the Cidade Jardim and JK shopping malls, with easy access to the city's main dining, entertainment, and financial destinations."
     },
     {
       id: 7,
       title: "Villaggio Via Condotti, Gramado (VENDIDO)",
       titleEn: "Villaggio Via Condotti, Gramado (SOLD)",
       location: "Campinas, SP",
-      price: "R$ 3.500.000",
+      price: "R$ 3.500.000,00",
       images: [
         "/categorias/casas_urbanas/villaggio/83.jpg",
         "/categorias/casas_urbanas/villaggio/70.jpg",

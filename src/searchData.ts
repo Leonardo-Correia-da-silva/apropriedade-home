@@ -40,7 +40,7 @@ export const searchProperties: SearchProperty[] = [
     title: "Refúgio na Montanha",
     titleEn: "Mountain Refuge",
     location: "Nazaré Paulista, SP",
-    price: "R$ 2.950.000",
+    price: "R$ 2.950.000,00",
     image: "/categorias/casas_montanha/nazare-paulista/5.jpg",
     beds: 6, baths: 6, cars: 4, totalArea: "55.000m²", builtArea: "450m²",
     sold: true
@@ -65,7 +65,7 @@ export const searchProperties: SearchProperty[] = [
     title: "Mansão no condomínio, Alphaville Campinas",
     titleEn: "Mansion in the Condominium, Alphaville Campinas",
     location: "Campinas, SP",
-    price: "R$ 22.900.000",
+    price: "R$ 22.900.000,00",
     image: "/categorias/casas_urbanas/neoclassica-alphavile/capa1.jpg",
     beds: 5, baths: 7, cars: 6, totalArea: "3.840m²", builtArea: "1.280m²"
   },
@@ -98,12 +98,12 @@ export const searchProperties: SearchProperty[] = [
     categoryPath: "/casasurbanas",
     categoryLabel: "Casas Urbanas",
     categoryLabelEn: "Urban Houses",
-    title: "Parque Portugal, Taquaral",
-    titleEn: "Parque Portugal, Taquaral",
-    location: "Campinas, SP",
-    price: "R$ 2.500.000",
-    image: "/categorias/casas_urbanas/parqueportugal/52.jpg",
-    beds: 4, baths: 6, cars: 4, totalArea: "350m²"
+    title: "Casa no bairro Cidade Jardim, em São Paulo",
+    titleEn: "House in the Cidade Jardim Neighborhood, São Paulo",
+    location: "São Paulo, SP",
+    price: "R$ 17.990.000,00",
+    image: "/categorias/casas_urbanas/cidade-jardim/7.jpg",
+    beds: 5, baths: 6, cars: 3, totalArea: "550m²", builtArea: "641m²"
   },
   {
     id: 7,
@@ -113,7 +113,7 @@ export const searchProperties: SearchProperty[] = [
     title: "Villaggio Via Condotti, Gramado",
     titleEn: "Villaggio Via Condotti, Gramado",
     location: "Campinas, SP",
-    price: "R$ 3.500.000",
+    price: "R$ 3.500.000,00",
     image: "/categorias/casas_urbanas/villaggio/83.jpg",
     beds: 5, baths: 7, cars: 6, totalArea: "691m²",
     sold: true

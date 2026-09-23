@@ -195,7 +195,7 @@ export default function CasadeCampoeMontanha() {
       title: "Refúgio na Montanha",
       titleEn: "Mountain Refuge",
       location: "Nazaré Paulista, SP",
-      price: "R$ 2.950.000",
+      price: "R$ 2.950.000,00",
       sold: true,
       images: [
         "/categorias/casas_montanha/nazare-paulista/5.jpg",

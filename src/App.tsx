@@ -1081,18 +1081,18 @@ const HomePage = ({ lang }: { lang: 'pt' | 'en' }) => {
           <div className="pt-12 border-t border-black/10 w-full">
             <Reveal delay={500} className="grid grid-cols-3 gap-6 text-center">
               <div>
-                <p className="font-qlassy text-3xl sm:text-4xl md:text-5xl leading-none tracking-tighter">+{/* */} <Counter end={12} /></p>
-                <p className="text-[10px] sm:text-[12px] md:text-[14px] tracking-widest uppercase font-bold text-gray-500 mt-3">{t.about.stats[0]}</p>
+                <p className="font-qlassy text-3xl sm:text-4xl md:text-5xl leading-none tracking-tighter">+<Counter end={12} /></p>
+                <p className="font-qlassy text-[11px] sm:text-[13px] md:text-[15px] uppercase tracking-wide leading-tight text-gray-500 mt-3">{t.about.stats[0]}</p>
               </div>
               <div>
                 <p className="font-qlassy text-3xl sm:text-4xl md:text-5xl leading-none tracking-tighter" style={{ color: cyanBrand }}>
-                  +{/* */} <Counter end={30} />mi
+                  +<Counter end={30} />mi
                 </p>
-                <p className="text-[10px] sm:text-[12px] md:text-[14px] tracking-widest uppercase font-bold text-gray-500 mt-3">{t.about.stats[1]}</p>
+                <p className="font-qlassy text-[11px] sm:text-[13px] md:text-[15px] uppercase tracking-wide leading-tight text-gray-500 mt-3">{t.about.stats[1]}</p>
               </div>
               <div>
                 <p className="font-qlassy text-3xl sm:text-4xl md:text-5xl leading-none tracking-tighter"><Counter end={100} />%</p>
-                <p className="text-[10px] sm:text-[12px] md:text-[14px] tracking-widest uppercase font-bold text-gray-500 mt-3">
+                <p className="font-qlassy text-[11px] sm:text-[13px] md:text-[15px] uppercase tracking-wide leading-tight text-gray-500 mt-3">
                   {lang === 'pt' ? 'Foco em Luxo' : 'Luxury Focus'}
                 </p>
               </div>
@@ -1171,7 +1171,7 @@ export default function App() {
           
           @font-face { 
             font-family: 'Qlassy'; 
-            src: url('/fonts/qlassy.ttf') format('truetype'); 
+            src: url('/fonts/Qlassy.ttf') format('truetype'); 
             font-display: swap;
           }
           

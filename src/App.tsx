@@ -383,19 +383,19 @@ const Header = ({ lang, setLang }: { lang: 'pt' | 'en'; setLang: (l: 'pt' | 'en'
                         <div key={i} className="flex flex-col">
                           <button
                             onClick={() => setIsMobilePropOpen(!isMobilePropOpen)}
-                            className="flex justify-between items-center text-sm font-bold tracking-[0.15em] uppercase text-gray-900 py-1 hover:opacity-70 transition-opacity"
+                            className="flex justify-between items-center text-xl font-bold tracking-[0.15em] uppercase text-gray-900 py-1 hover:opacity-70 transition-opacity"
                           >
                             <span>{item}</span>
-                            <span className="text-xs">{isMobilePropOpen ? '−' : '+'}</span>
+                            <span className="text-xl">{isMobilePropOpen ? '−' : '+'}</span>
                           </button>
                           {isMobilePropOpen && (
-                            <div className="pl-4 flex flex-col space-y-3 py-2 border-l border-gray-200 mt-2">
+                            <div className="pl-4 flex flex-col space-y-4 py-2 border-l border-gray-200 mt-2">
                               {t.propTitles.map((title, idx) => (
                                 <Link
                                   key={idx}
                                   to={t.propPaths[idx]}
                                   onClick={() => setIsMobileMenuOpen(false)}
-                                  className="text-xs font-bold tracking-[0.1em] uppercase text-gray-600 hover:text-black transition-colors"
+                                  className="text-base font-bold tracking-[0.1em] uppercase text-gray-600 hover:text-black transition-colors"
                                 >
                                   <span className="lang-fade-text">{title}</span>
                                 </Link>
@@ -414,7 +414,7 @@ const Header = ({ lang, setLang }: { lang: 'pt' | 'en'; setLang: (l: 'pt' | 'en'
                           handleNavigation(e, path);
                           setIsMobileMenuOpen(false);
                         }}
-                        className="text-sm font-bold tracking-[0.15em] uppercase text-gray-900 py-1 hover:opacity-70 transition-opacity"
+                        className="text-xl font-bold tracking-[0.15em] uppercase text-gray-900 py-1 hover:opacity-70 transition-opacity"
                       >
                         <span className="lang-fade-text">{item}</span>
                       </a>
@@ -426,7 +426,7 @@ const Header = ({ lang, setLang }: { lang: 'pt' | 'en'; setLang: (l: 'pt' | 'en'
                           handleNavigation(e, path);
                           setIsMobileMenuOpen(false);
                         }}
-                        className="text-sm font-bold tracking-[0.15em] uppercase text-gray-900 py-1 hover:opacity-70 transition-opacity"
+                        className="text-xl font-bold tracking-[0.15em] uppercase text-gray-900 py-1 hover:opacity-70 transition-opacity"
                       >
                         <span className="lang-fade-text">{item}</span>
                       </Link>

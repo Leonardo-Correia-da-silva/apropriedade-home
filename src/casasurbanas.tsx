@@ -385,7 +385,7 @@ export default function Urbanas() {
                 </div>
               </div>
 
-              <div className="order-3 lg:order-none space-y-8 md:space-y-16">
+              <div className="order-2 lg:order-none space-y-8 md:space-y-16">
                 {selectedProperty.gallery.map((img, index) => (
                   <div
                     key={index}
@@ -404,16 +404,24 @@ export default function Urbanas() {
               </div>
             </div>
 
-            <div className="order-2 lg:order-none lg:col-span-5">
+            {/* Valor no fim da página em telas menores (depois da galeria) */}
+            <div className="order-4 lg:hidden border-t border-gray-100 pt-10 text-center">
+              <span className="text-sm uppercase text-black block mb-1 md:mb-2 font-[HeadingNow,sans-serif]!">{t.value}</span>
+                  <div className="font-segoe font-light text-4xl text-gray-900 tracking-tight">
+                    {selectedProperty.price}
+                  </div>
+            </div>
+
+            <div className="order-3 lg:order-none lg:col-span-5">
               <div className="lg:sticky lg:top-32 space-y-8 md:space-y-10 border-t lg:border-t-0 border-gray-100 pt-10 lg:pt-0 text-center lg:text-left">
-                <div>
+                <div className="hidden lg:block">
                   <span className="text-sm uppercase text-black block mb-1 md:mb-2 font-[HeadingNow,sans-serif]!">{t.value}</span>
                   <div className="font-segoe font-light text-4xl text-gray-900 tracking-tight">
                     {selectedProperty.price}
                   </div>
                 </div>
 
-                <div className="w-full h-[1px] bg-gray-200" />
+                <div className="hidden lg:block w-full h-[1px] bg-gray-200" />
 
                 <div className="space-y-6">
                   <h2 className="text-base tracking-[0.2em] uppercase text-black font-[HeadingNow,sans-serif]!">{t.features}</h2>

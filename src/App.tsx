@@ -794,19 +794,19 @@ const Footer = ({ lang }: { lang: 'pt' | 'en' }) => {
 
           <div className="col-span-2 lg:col-span-1">
             <h4 className="text-[15px] font-bold text-black uppercase mb-4">Newsletter</h4>
-            <p className="text-gray-500 text-sm mb-4 font-garamond">
+            <p className="text-gray-500 text-sm leading-relaxed mb-8 md:mb-4 font-garamond text-balance max-w-[280px] mx-auto md:max-w-none md:mx-0">
               {lang === 'pt'
                 ? 'Assine para receber nossa revista digital e lançamentos em primeira mão.'
                 : 'Subscribe to receive our digital magazine and be the first to know about new listings.'}
             </p>
-            <form onSubmit={handleOpenNewsletter} className="flex items-center border-b border-gray-300 focus-within:border-black transition-colors pb-1 group">
+            <form onSubmit={handleOpenNewsletter} className="flex items-center w-full max-w-[280px] mx-auto md:max-w-none md:mx-0 border-b border-gray-300 focus-within:border-black transition-colors pb-1 group">
               <input
                 type="email"
                 required
                 value={emailInput}
                 onChange={(e) => setEmailInput(e.target.value)}
                 placeholder={lang === 'pt' ? 'Seu endereço de e-mail' : 'Your email address'}
-                className="w-full outline-none text-xs font-garamond text-gray-800 bg-transparent placeholder:text-gray-400"
+                className="w-full outline-none text-base md:text-xs font-garamond text-gray-800 bg-transparent placeholder:text-gray-400"
               />
               <button type="submit" className="text-gray-400 group-hover:text-black transition-colors p-1">
                 <ArrowUpRight size={16} />

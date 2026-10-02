@@ -1,6 +1,9 @@
 import React, { useEffect, useState, memo } from 'react';
-import { useLocation } from 'react-router-dom';
+import { usePropertyRoute } from './usePropertyRoute';
+import { DealChooser, DealToggle, DealComingSoon } from './DealChooser';
+import { gallery } from './galleries';
 import {
+  Mountain,
   ArrowLeft, 
   MapPin, 
   BedDouble,
@@ -21,7 +24,8 @@ interface PropertyListItem {
   title: string; 
   titleEn?: string; 
   location: string;
-  price: string;
+  price?: string; // valor de venda (sem ele, o imóvel não aparece em "Comprar")
+  rentPrice?: string; // aluguel por mês (com ele, o imóvel aparece em "Alugar")
   images: string[];  // Apenas as fotos do carrossel inicial
   gallery: string[]; // Todas as 170 fotos da casa
   specs: {
@@ -43,6 +47,8 @@ const translations = {
     back: "VOLTAR",
     details: "VER DETALHES",
     value: "Valor",
+    rentValue: "Valor de Locação",
+    perMonth: "/mês",
     overview: "Visão Geral",
     features: "Características",
     sold: "VENDIDO"
@@ -52,6 +58,8 @@ const translations = {
     back: "BACK",
     details: "VIEW DETAILS",
     value: "Value",
+    rentValue: "Monthly Rent",
+    perMonth: "/month",
     overview: "Overview",
     features: "Features",
     sold: "SOLD"
@@ -110,7 +118,6 @@ export default function CasadeCampoeMontanha() {
   const [lang, setLang] = useState<'pt' | 'en'>('pt');
   
   // Estado para controlar qual imóvel está selecionado (Visualização de Detalhes)
-  const [selectedProperty, setSelectedProperty] = useState<PropertyListItem | null>(null);
   
   // Estado para controlar a foto atual de cada imóvel independentemente
   const [currentImgIndices, setCurrentImgIndices] = useState<Record<number, number>>({});
@@ -176,7 +183,7 @@ export default function CasadeCampoeMontanha() {
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isLightboxOpen, lightboxIndex, selectedProperty]);
+  }, [isLightboxOpen, lightboxIndex]);
 
   const t = translations[lang];
 
@@ -205,9 +212,7 @@ export default function CasadeCampoeMontanha() {
         "/categorias/casas_montanha/nazare-paulista/27.jpg",
         "/categorias/casas_montanha/nazare-paulista/35.jpg",
       ],
-      gallery: Array.from({ length: 39 }, (_, i) =>
-        `/categorias/casas_montanha/nazare-paulista/${i + 1}.jpg`
-      ),
+      gallery: gallery("casas_montanha/nazare-paulista"),
       specs: { beds: 6, baths: 6, cars: 4, totalArea: "55.000m²", builtArea: "450m²" },
      description: "O sítio, com cerca de 55 mil m², fica localizado no alto de uma montanha isolada, que proporciona um estilo de vida que traz muita qualidade de vida, desapego da agitação da cidade e um encontro com a natureza abundante em árvores floridas, paisagens de tirar o fôlego e muita privacidade.\n\nA vista do solarium da piscina contempla algumas cidades a dezenas de quilômetros de distância. Dali, é possível observar parte do mundo em silêncio, no aconchego de uma casa de campo que reúne características de uma mini fazenda. Pomar com centenas de árvores, lago, casa de caseiro habitada, galinheiro, horta, estufa, espaço gourmet externo, sauna e piscina com raia. A casa principal é a alma da propriedade: com arquitetura brasileira, rica em iluminação e ventilação naturais, é o verdadeiro símbolo de casa de montanha. Lareira central para noites frias, pé-direito duplo com forro de madeira no teto, diversos ambientes integrados, cozinha com balcão americano, despensa, sala de almoço, sala de jantar com fogão à lenha e paredes de vidro com vistas do jardim e do horizonte infinito.\n\nNo andar superior, há um escritório independente e a suíte principal, que conta com closet, banheiro e varanda com vistas incomparáveis. Ao todo, são quatro suítes, sendo três no piso térreo. É a propriedade ideal para quem quer sair do ritmo acelerado da cidade e da vida moderna, para um refúgio seguro, longe do ruído da cidade grande e perto da sinfonia da mãe natureza.",
 
@@ -227,9 +232,7 @@ descriptionEn: "The estate, spanning approximately 55,000 m², is located atop a
         "/categorias/casas_montanha/PilarDoSul/32.jpg",
         "/categorias/casas_montanha/PilarDoSul/35.jpg",
       ],
-      gallery: Array.from({ length: 37 }, (_, i) =>
-        `/categorias/casas_montanha/PilarDoSul/${i + 1}.jpg`
-      ),
+      gallery: gallery("casas_montanha/PilarDoSul"),
       specs: {
         beds: 10,
         baths: 11,
@@ -278,25 +281,16 @@ descriptionEn: "The estate, spanning approximately 55,000 m², is located atop a
     setLightboxIndex((prev) => (prev - 1 + selectedProperty.gallery.length) % selectedProperty.gallery.length);
   };
 
-  const handleOpenDetails = (property: PropertyListItem) => {
-    setSelectedProperty(property);
-    window.scrollTo(0, 0);
-  };
+  const { deal, listProperties, selectedProperty, openProperty: handleOpenDetails, closeProperty: handleCloseDetails } = usePropertyRoute(properties, '/casadecampoemontanha');
+  const valueLabel = deal === 'alugar' ? t.rentValue : t.value;
+  const priceOf = (p: PropertyListItem) => (deal === 'alugar'
+    ? <>{p.rentPrice}<span className="nav-label font-normal text-[0.7em] tracking-[0.15em] ml-1">{t.perMonth}</span></>
+    : p.price);
 
-  const handleCloseDetails = () => {
-    setSelectedProperty(null);
-    window.scrollTo(0, 0);
-  };
-
-  const routerLocation = useLocation();
+  // Fecha a galeria ao trocar de imóvel (inclusive pela seta do navegador)
   useEffect(() => {
-    const openId = (routerLocation.state as { openId?: number } | null)?.openId;
-    if (openId) {
-      const match = properties.find((p) => p.id === openId);
-      if (match) handleOpenDetails(match);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [routerLocation.state]);
+    setIsLightboxOpen(false);
+  }, [selectedProperty?.id]);
 
   const scrollToTop = () => {
     window.scrollTo({
@@ -311,7 +305,14 @@ descriptionEn: "The estate, spanning approximately 55,000 m², is located atop a
       <StyleInjector />
 
       {/* 1. VISUALIZAÇÃO DE DETALHES */}
-      {selectedProperty ? (
+      {!deal ? (
+        <DealChooser
+          lang={lang}
+          title={t.segmentTitle}
+          basePath="/casadecampoemontanha"
+          counts={{ comprar: properties.filter((p) => p.price).length, alugar: properties.filter((p) => p.rentPrice).length }}
+        />
+      ) : selectedProperty ? (
         <main className="pb-32 animate-fadeIn">
           {/* Botão de Voltar Minimalista */}
           <div className="absolute top-6 left-6 lg:top-8 lg:left-16 z-30">
@@ -381,18 +382,18 @@ descriptionEn: "The estate, spanning approximately 55,000 m², is located atop a
 
             {/* Valor no fim da página em telas menores (depois da galeria) */}
             <div className="order-4 lg:hidden border-t border-gray-100 pt-10 text-center">
-              <span className="text-sm uppercase text-black block mb-1 md:mb-2 font-[HeadingNow,sans-serif]!">{t.value}</span>
+              <span className="text-sm uppercase text-black block mb-1 md:mb-2 font-[HeadingNow,sans-serif]!">{valueLabel}</span>
                   <div className="font-segoe font-light text-4xl text-gray-900 tracking-tight">
-                    {selectedProperty.price}
+                    {priceOf(selectedProperty)}
                   </div>
             </div>
 
             <div className="order-3 lg:order-none lg:col-span-5">
               <div className="lg:sticky lg:top-32 space-y-8 md:space-y-10 border-t lg:border-t-0 border-gray-100 pt-10 lg:pt-0 text-center lg:text-left">
                 <div className="hidden lg:block">
-                  <span className="text-sm uppercase text-black block mb-1 md:mb-2 font-[HeadingNow,sans-serif]!">{t.value}</span>
+                  <span className="text-sm uppercase text-black block mb-1 md:mb-2 font-[HeadingNow,sans-serif]!">{valueLabel}</span>
                   <div className="font-segoe font-light text-4xl text-gray-900 tracking-tight">
-                    {selectedProperty.price}
+                    {priceOf(selectedProperty)}
                   </div>
                 </div>
 
@@ -470,6 +471,16 @@ descriptionEn: "The estate, spanning approximately 55,000 m², is located atop a
 
           </div>
         </main>
+      ) : listProperties.length === 0 ? (
+        <DealComingSoon
+          lang={lang}
+          deal={deal}
+          title={t.segmentTitle}
+          basePath="/casadecampoemontanha"
+          noun={{ pt: 'casas de campo e montanha', en: 'country and mountain houses' }}
+          icon={Mountain}
+          isLoaded={isLoaded}
+        />
       ) : (
         /* 2. VISUALIZAÇÃO DA LISTAGEM ORIGINAL */
         <main className={`pt-16 pb-32 transition-all duration-1000 ${isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
@@ -479,11 +490,12 @@ descriptionEn: "The estate, spanning approximately 55,000 m², is located atop a
               {t.segmentTitle}
             </h1>
             <div className="w-12 h-[1px] bg-gray-300 mx-auto mt-6 md:mt-8"></div>
+            <DealToggle lang={lang} basePath="/casadecampoemontanha" deal={deal} />
           </div>
 
           <section className="w-full px-8 lg:px-16">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-              {properties.map((item) => {
+              {listProperties.map((item) => {
                 const currentImgIdx = currentImgIndices[item.id] || 0;
 
                 return (
@@ -555,8 +567,8 @@ descriptionEn: "The estate, spanning approximately 55,000 m², is located atop a
                         </div>
                       </div>
                       <div className="text-left xl:text-right">
-                        <span className="nav-label text-[10px] text-gray-400 block mb-1">{t.value}</span>
-                        <span className="font-segoe font-semibold text-lg text-gray-800 tracking-tight">{item.price}</span>
+                        <span className="nav-label text-[10px] text-gray-400 block mb-1">{valueLabel}</span>
+                        <span className="font-segoe font-semibold text-lg text-gray-800 tracking-tight">{priceOf(item)}</span>
                       </div>
                     </div>
 

@@ -1,6 +1,8 @@
 import React, { useEffect, useState, memo } from 'react';
-import { useLocation } from 'react-router-dom';
+import { usePropertyRoute } from './usePropertyRoute';
+import { DealChooser, DealToggle, DealComingSoon } from './DealChooser';
 import {
+  Map,
   ArrowLeft,
   MapPin,
   Maximize,
@@ -57,7 +59,8 @@ interface PropertyListItem {
   title: string;
   titleEn?: string;
   location: string;
-  price: string;
+  price?: string; // valor de venda (sem ele, o imóvel não aparece em "Comprar")
+  rentPrice?: string; // aluguel por mês (com ele, o imóvel aparece em "Alugar")
   images: string[];
   gallery: string[];
   specs: {
@@ -73,6 +76,8 @@ const translations = {
     back: "VOLTAR",
     details: "VER DETALHES",
     value: "Valor",
+    rentValue: "Valor de Locação",
+    perMonth: "/mês",
     overview: "Visão Geral",
     features: "Características"
   },
@@ -81,6 +86,8 @@ const translations = {
     back: "BACK",
     details: "VIEW DETAILS",
     value: "Value",
+    rentValue: "Monthly Rent",
+    perMonth: "/month",
     overview: "Overview",
     features: "Features"
   }
@@ -91,7 +98,6 @@ export default function Terrenos() {
   const [isLoaded, setIsLoaded] = useState(false);
   const [lang, setLang] = useState<'pt' | 'en'>('pt');
 
-  const [selectedProperty, setSelectedProperty] = useState<PropertyListItem | null>(null);
   const [currentImgIndices, setCurrentImgIndices] = useState<{ [key: number]: number }>({});
   
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
@@ -148,7 +154,7 @@ export default function Terrenos() {
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isLightboxOpen, lightboxIndex, selectedProperty]);
+  }, [isLightboxOpen, lightboxIndex]);
 
   const t = translations[lang];
 
@@ -260,26 +266,16 @@ export default function Terrenos() {
     setLightboxIndex((prev) => (prev - 1 + selectedProperty.gallery.length) % selectedProperty.gallery.length);
   };
 
-  const handleOpenDetails = (property: PropertyListItem) => {
-    setSelectedProperty(property);
-    window.scrollTo(0, 0);
-  };
+  const { deal, listProperties, selectedProperty, openProperty: handleOpenDetails, closeProperty: handleCloseDetails } = usePropertyRoute(properties, '/casasdemontanha');
+  const valueLabel = deal === 'alugar' ? t.rentValue : t.value;
+  const priceOf = (p: PropertyListItem) => (deal === 'alugar'
+    ? <>{p.rentPrice}<span className="nav-label font-normal text-[0.7em] tracking-[0.15em] ml-1">{t.perMonth}</span></>
+    : p.price);
 
-  const routerLocation = useLocation();
+  // Fecha a galeria ao trocar de imóvel (inclusive pela seta do navegador)
   useEffect(() => {
-    const openId = (routerLocation.state as { openId?: number } | null)?.openId;
-    if (openId) {
-      const match = properties.find((p) => p.id === openId);
-      if (match) handleOpenDetails(match);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [routerLocation.state]);
-
-  const handleCloseDetails = () => {
-    setSelectedProperty(null);
     setIsLightboxOpen(false);
-    window.scrollTo(0, 0);
-  };
+  }, [selectedProperty?.id]);
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -300,7 +296,14 @@ export default function Terrenos() {
         </button>
       )}
 
-      {selectedProperty ? (
+      {!deal ? (
+        <DealChooser
+          lang={lang}
+          title={t.segmentTitle}
+          basePath="/casasdemontanha"
+          counts={{ comprar: properties.filter((p) => p.price).length, alugar: properties.filter((p) => p.rentPrice).length }}
+        />
+      ) : selectedProperty ? (
         <main className="pb-32 animate-fadeIn">
 
           <div className="absolute top-6 left-6 lg:top-8 lg:left-16 z-30">
@@ -361,18 +364,18 @@ export default function Terrenos() {
 
             {/* Valor no fim da página em telas menores (depois da galeria) */}
             <div className="order-4 lg:hidden border-t border-gray-100 pt-10 text-center">
-              <span className="text-sm uppercase text-black block mb-1 md:mb-2 font-[HeadingNow,sans-serif]!">{t.value}</span>
+              <span className="text-sm uppercase text-black block mb-1 md:mb-2 font-[HeadingNow,sans-serif]!">{valueLabel}</span>
                   <div className="font-segoe font-light text-4xl text-gray-900 tracking-tight">
-                    {selectedProperty.price}
+                    {priceOf(selectedProperty)}
                   </div>
             </div>
 
             <div className="order-3 lg:order-none lg:col-span-5">
               <div className="lg:sticky lg:top-32 space-y-8 md:space-y-10 border-t lg:border-t-0 border-gray-100 pt-10 lg:pt-0 text-center lg:text-left">
                 <div className="hidden lg:block">
-                  <span className="text-sm uppercase text-black block mb-1 md:mb-2 font-[HeadingNow,sans-serif]!">{t.value}</span>
+                  <span className="text-sm uppercase text-black block mb-1 md:mb-2 font-[HeadingNow,sans-serif]!">{valueLabel}</span>
                   <div className="font-segoe font-light text-4xl text-gray-900 tracking-tight">
-                    {selectedProperty.price}
+                    {priceOf(selectedProperty)}
                   </div>
                 </div>
 
@@ -400,6 +403,16 @@ export default function Terrenos() {
 
           </div>
         </main>
+      ) : listProperties.length === 0 ? (
+        <DealComingSoon
+          lang={lang}
+          deal={deal}
+          title={t.segmentTitle}
+          basePath="/casasdemontanha"
+          noun={{ pt: 'terrenos', en: 'land plots' }}
+          icon={Map}
+          isLoaded={isLoaded}
+        />
       ) : (
         <main className={`pt-16 pb-32 transition-all duration-1000 ${isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
           <div className="w-full px-8 md:px-16 mb-20 text-center">
@@ -407,11 +420,12 @@ export default function Terrenos() {
               {t.segmentTitle}
             </h1>
             <div className="w-12 h-[1px] bg-gray-300 mx-auto mt-8"></div>
+            <DealToggle lang={lang} basePath="/casasdemontanha" deal={deal} />
           </div>
 
           <section className="w-full px-8 lg:px-16">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-              {properties.map((item) => {
+              {listProperties.map((item) => {
                 const imgIndex = currentImgIndices[item.id] || 0;
 
                 return (
@@ -477,8 +491,8 @@ export default function Terrenos() {
                         </div>
                       </div>
                       <div className="text-left xl:text-right">
-                        <span className="nav-label text-[10px] text-gray-400 block mb-1">{t.value}</span>
-                        <span className="font-segoe font-semibold text-lg text-gray-800 tracking-tight">{item.price}</span>
+                        <span className="nav-label text-[10px] text-gray-400 block mb-1">{valueLabel}</span>
+                        <span className="font-segoe font-semibold text-lg text-gray-800 tracking-tight">{priceOf(item)}</span>
                       </div>
                     </div>
 

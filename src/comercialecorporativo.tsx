@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { useOutletContext } from 'react-router-dom';
+import { useOutletContext, useParams } from 'react-router-dom';
+import { DealChooser, DealToggle } from './DealChooser';
 import { 
   ArrowLeft, 
   MessageCircle, 
@@ -40,6 +41,8 @@ export default function ComercialECorporativo({ language }: ComercialECorporativ
   const cyanBase = "#00B6E3";
   const [isLoaded, setIsLoaded] = useState(false);
   const context = useOutletContext<any>();
+  const { modo } = useParams();
+  const deal = modo === 'comprar' || modo === 'alugar' ? modo : undefined;
 
   // Obtém o idioma reativo vindo do App.tsx (props ou outletContext), com fallback dinâmico ao localStorage
   const [lang, setLang] = useState<'pt' | 'en'>(
@@ -89,6 +92,9 @@ export default function ComercialECorporativo({ language }: ComercialECorporativ
         .nav-label, .btn-label { font-family: 'NeueHelvetica', sans-serif !important; text-transform: uppercase; }
       `}} />
 
+      {!deal ? (
+        <DealChooser lang={lang} title={t.title} basePath="/comercialecorporativo" />
+      ) : (
       <main className={`pt-20 pb-40 transition-all duration-1000 ${isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
         {/* Cabeçalho do Segmento */}
         <div className="container mx-auto px-6 mb-12 text-center">
@@ -98,6 +104,7 @@ export default function ComercialECorporativo({ language }: ComercialECorporativ
           <h1 className="text-4xl font-qlassy mb-6 uppercase tracking-tighter text-gray-700">
             {t.title}
           </h1>
+          <div className="mb-6"><DealToggle lang={lang} basePath="/comercialecorporativo" deal={deal} /></div>
           <div className="flex justify-center mb-6">
             <Briefcase size={40} strokeWidth={1} className="text-gray-300" />
           </div>
@@ -128,6 +135,7 @@ export default function ComercialECorporativo({ language }: ComercialECorporativ
           </div>
         </section>
       </main>
+      )}
     </div>
   );
 }

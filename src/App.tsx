@@ -153,7 +153,8 @@ const Header = ({ lang, setLang }: { lang: 'pt' | 'en'; setLang: (l: 'pt' | 'en'
           p.beds ? `${p.beds} quartos suites bedrooms suites` : '',
           p.baths ? `${p.baths} banheiros bathrooms` : '',
           p.cars ? `${p.cars} vagas garagem parking` : '',
-          p.sold ? 'vendido sold' : ''
+          p.sold ? 'vendido sold' : '',
+          p.deal === 'alugar' ? 'aluguel alugar locacao rent rental' : 'venda comprar sale buy'
         ].join(' '));
         return queryWords.every((word) => haystack.includes(word));
       })
@@ -191,7 +192,7 @@ const Header = ({ lang, setLang }: { lang: 'pt' | 'en'; setLang: (l: 'pt' | 'en'
   const goToProperty = (prop: SearchProperty) => {
     setIsSearchOpen(false);
     setSearchQuery('');
-    navigate(prop.categoryPath, { state: { openId: prop.id } });
+    navigate(prop.categoryPath, { state: { openId: prop.id, deal: prop.deal ?? 'comprar' } });
   };
 
   const handleSearchKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -1090,7 +1091,7 @@ const HomePage = ({ lang }: { lang: 'pt' | 'en' }) => {
               </div>
               <div>
                 <p className="font-qlassy text-3xl sm:text-4xl md:text-5xl leading-none tracking-tighter" style={{ color: cyanBrand }}>
-                  +<Counter end={30} />mi
+                  <span className="relative inline-block"><span className="absolute right-full">+</span><Counter end={30} />mi</span>
                 </p>
                 <p className="font-['HeadingNow',sans-serif] text-[13px] sm:text-[15px] md:text-[17px] uppercase tracking-widest leading-tight text-black -mt-0.5 flex items-start justify-center text-center min-h-[2.5em] md:block md:min-h-0">{t.about.stats[1]}</p>
               </div>
@@ -1278,10 +1279,18 @@ export default function App() {
           <Route path="/" element={<HomePage lang={lang} />} />
           <Route path="/magazinepage" element={<MagazinePage />} />
           <Route path="/casadecampoemontanha" element={<CasadeCampoeMontanha />} />
+          <Route path="/casadecampoemontanha/:modo" element={<CasadeCampoeMontanha />} />
+          <Route path="/casadecampoemontanha/:modo/:slug" element={<CasadeCampoeMontanha />} />
           <Route path="/casasurbanas" element={<CasasUrbanas />} />
+          <Route path="/casasurbanas/:modo" element={<CasasUrbanas />} />
+          <Route path="/casasurbanas/:modo/:slug" element={<CasasUrbanas />} />
           <Route path="/casasdemontanha" element={<Montanha />} />
+          <Route path="/casasdemontanha/:modo" element={<Montanha />} />
+          <Route path="/casasdemontanha/:modo/:slug" element={<Montanha />} />
           <Route path="/apartamentos" element={<Apartamentos />} />
+          <Route path="/apartamentos/:modo" element={<Apartamentos />} />
           <Route path="/comercialecorporativo" element={<ComercialECorporativo />} />
+          <Route path="/comercialecorporativo/:modo" element={<ComercialECorporativo />} />
 
           <Route path="/politica-de-privacidade" element={<PoliticaPrivacidade />} />
           <Route path="/termos-de-uso" element={<TermosUso />} />

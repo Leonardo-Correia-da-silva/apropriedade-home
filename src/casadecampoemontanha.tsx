@@ -2,6 +2,7 @@ import React, { useEffect, useState, memo } from 'react';
 import { usePropertyRoute } from './usePropertyRoute';
 import { DealChooser, DealToggle, DealComingSoon } from './DealChooser';
 import { gallery } from './galleries';
+import Img from './Img';
 import {
   Mountain,
   ArrowLeft, 
@@ -326,14 +327,14 @@ descriptionEn: "The estate, spanning approximately 55,000 m², is located atop a
           </div>
 
           {/* Imagem de Capa em Tela Cheia */}
-          <div className="w-full h-[80vh] md:h-screen relative bg-gray-900">
+          <div className="w-full h-[80vh] md:h-screen relative bg-gray-900 skeleton-dark">
             {selectedProperty.sold && (
               <div className="sold-badge">{t.sold}</div>
             )}
-            <img
+            <Img
               src={selectedProperty.images[0]} 
               alt={lang === 'en' && selectedProperty.titleEn ? selectedProperty.titleEn : selectedProperty.title} 
-              className="w-full h-full object-cover opacity-95"
+              className="w-full h-full object-cover opacity-95 transition-opacity duration-700"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/10" />
             <div className="absolute bottom-12 md:bottom-24 left-6 md:left-16 right-6 text-white max-w-4xl">
@@ -364,13 +365,13 @@ descriptionEn: "The estate, spanning approximately 55,000 m², is located atop a
                   return (
                     <div
                       key={index}
-                      className="w-full overflow-hidden bg-gray-50 aspect-[16/10] cursor-zoom-in group/item relative"
+                      className="w-full overflow-hidden bg-gray-50 aspect-[16/10] skeleton cursor-zoom-in group/item relative"
                       onClick={() => openLightbox(index)}
                     >
-                      <img
+                      <Img
                         src={img}
                         alt={`Galeria Detalhe ${index + 1}`}
-                        className="w-full h-full object-cover sm:hover:scale-102 transition-transform duration-[2s] ease-out"
+                        className="w-full h-full object-cover sm:hover:scale-102 transition-[transform,opacity] duration-[2s] ease-out"
                         loading="lazy"
                       />
                       <div className="absolute inset-0 bg-black/0 hover:bg-black/10 transition-colors duration-300 pointer-events-none" />
@@ -501,14 +502,14 @@ descriptionEn: "The estate, spanning approximately 55,000 m², is located atop a
                 return (
                   <div key={item.id} className="group cursor-pointer" onClick={() => handleOpenDetails(item)}>
                     
-                    <div className="relative overflow-hidden rounded-sm mb-6 w-full pt-[62.5%] bg-gray-50">
+                    <div className="relative overflow-hidden rounded-sm mb-6 w-full pt-[62.5%] bg-gray-50 skeleton">
                       {item.sold && (
                         <div className="sold-ribbon-wrapper">
                           <div className="sold-ribbon">{t.sold}</div>
                         </div>
                       )}
                       {item.images.map((imgSrc, idx) => (
-                        <img 
+                        <Img 
                           key={idx}
                           src={imgSrc} 
                           alt={`${lang === 'en' && item.titleEn ? item.titleEn : item.title} - ${idx + 1}`}

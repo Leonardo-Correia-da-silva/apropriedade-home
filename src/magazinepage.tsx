@@ -3,6 +3,7 @@ import { Link, Navigate, useParams } from 'react-router-dom';
 import HTMLFlipBook from 'react-pageflip';
 import { ArrowLeft, ChevronLeft, ChevronRight } from 'lucide-react';
 import { magazines } from './magazines';
+import Img from './Img';
 
 const magazineTranslations = {
   'pt': {
@@ -80,8 +81,8 @@ const MagazineList = () => {
           const title = lang === 'en' ? magazine.titleEn : magazine.title;
           return (
             <Link key={magazine.slug} to={`/magazinepage/${magazine.slug}`} className="group flex flex-col items-center w-full max-w-[300px] md:w-[340px] md:max-w-none">
-              <div className="w-full aspect-[1/1.41] bg-white overflow-hidden shadow-[12px_16px_30px_-8px_rgba(0,0,0,0.35)] transition-transform duration-500 group-hover:-translate-y-1">
-                <img src={magazine.pages[0]} alt={title} className="w-full h-full object-cover" />
+              <div className="w-full aspect-[1/1.41] bg-white skeleton overflow-hidden shadow-[12px_16px_30px_-8px_rgba(0,0,0,0.35)] transition-transform duration-500 group-hover:-translate-y-1">
+                <Img src={magazine.pages[0]} alt={title} className="w-full h-full object-cover transition-opacity duration-700" />
               </div>
               <p className="font-qlassy text-gray-700 text-2xl md:text-3xl tracking-tighter mt-8 text-center transition-colors group-hover:text-[#49BFEA]">
                 {lang === 'en' ? `${title} ${t(lang).magazine}` : `${t(lang).magazine} ${title}`}
@@ -238,7 +239,7 @@ const MagazineViewer = ({ pages }: { pages: string[] }) => {
                 return (
                   <div
                     key={index}
-                    className="bg-white relative overflow-hidden"
+                    className="bg-white skeleton relative overflow-hidden"
                     data-density={(isFirstPage || isLastPage) ? "hard" : "soft"}
                   >
                     {/* Sombra da dobra central apenas nas páginas abertas */}
@@ -251,10 +252,10 @@ const MagazineViewer = ({ pages }: { pages: string[] }) => {
                     )}
 
                     {(index < loadedUntil || isLastPage) && (
-                      <img
+                      <Img
                         src={image}
                         alt={`Página ${index + 1}`}
-                        className="w-full h-full object-cover select-none"
+                        className="w-full h-full object-cover select-none transition-opacity duration-500"
                         loading="eager"
                       />
                     )}

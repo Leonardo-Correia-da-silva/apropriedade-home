@@ -246,11 +246,11 @@ export const searchProperties: SearchProperty[] = [
     categoryPath: "/casasdemontanha",
     categoryLabel: "Terrenos",
     categoryLabelEn: "Land Plots",
-    title: "Condomínio Tamboré",
-    titleEn: "Exclusive Plot in Gated Community",
+    title: "Condomínio Tamboré Jaguariúna",
+    titleEn: "Tamboré Jaguariúna Condominium",
     location: "Jaguariúna, SP",
     price: "R$ 480.000,00",
-    image: "/categorias/terrenos/lotetambore/5.jpg",
+    image: "/categorias/terrenos/lotetambore/1.jpg",
     totalArea: "510m²"
   },
   {
@@ -262,7 +262,7 @@ export const searchProperties: SearchProperty[] = [
     titleEn: "Plot in Prime Area",
     location: "Itupeva, SP",
     price: "R$ 6.899.900,00",
-    image: "/categorias/terrenos/lotefazendadagrama/6.jpg",
+    image: "/categorias/terrenos/lotefazendadagrama/5.jpg",
     totalArea: "2.669m²"
   },
   {
@@ -274,8 +274,8 @@ export const searchProperties: SearchProperty[] = [
     titleEn: "Panoramic Plot",
     location: "Campinas, SP",
     price: "R$ 1.460.000,00",
-    image: "/categorias/terrenos/lote25/6.jpg",
-    totalArea: "537m²"
+    image: "/categorias/terrenos/alphaville-dom-pedro-ii/1.jpg",
+    totalArea: "534m²"
   }
 ];
 

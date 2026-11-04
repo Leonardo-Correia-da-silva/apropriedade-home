@@ -1278,6 +1278,7 @@ export default function App() {
         <Routes>
           <Route path="/" element={<HomePage lang={lang} />} />
           <Route path="/magazinepage" element={<MagazinePage />} />
+          <Route path="/magazinepage/:revista" element={<MagazinePage />} />
           <Route path="/casadecampoemontanha" element={<CasadeCampoeMontanha />} />
           <Route path="/casadecampoemontanha/:modo" element={<CasadeCampoeMontanha />} />
           <Route path="/casadecampoemontanha/:modo/:slug" element={<CasadeCampoeMontanha />} />

@@ -11,6 +11,6 @@ export interface Magazine {
 }
 
 export const magazines: Magazine[] = [
-  { slug: 'casa-oasis', title: 'Casa Oásis', titleEn: 'Casa Oásis', pages: gallery('magazine/casa-oasis') },
-  { slug: 'casa-de-campo', title: 'Casa de Campo', titleEn: 'Casa de Campo', pages: gallery('magazine/casa-de-campo') },
+  { slug: 'casa-oasis', title: 'Casa Oásis', titleEn: 'Oasis House', pages: gallery('magazine/casa-oasis') },
+  { slug: 'casa-de-campo', title: 'Casa de Campo', titleEn: 'Country House', pages: gallery('magazine/casa-de-campo') },
 ].filter((m) => m.pages.length > 0);

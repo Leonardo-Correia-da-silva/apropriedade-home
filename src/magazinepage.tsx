@@ -41,6 +41,11 @@ const magazineStyles = `
   /* Limpa fundos padrão da biblioteca e adiciona a sombra na raiz wrapper */
   .stf__block { background-color: transparent !important; }
   .stf__wrapper { box-shadow: 0 50px 100px -30px rgba(0,0,0,0.2); }
+
+  /* Celular: libera o zoom com dois dedos (a biblioteca do livro bloqueia com touch-action: pan-y) */
+  @media (max-width: 767px) {
+    .magazine-book, .magazine-book * { touch-action: pan-x pan-y pinch-zoom !important; }
+  }
 `;
 
 const useLang = () => {
@@ -205,6 +210,7 @@ const MagazineViewer = ({ pages }: { pages: string[] }) => {
           {dimensions.width > 0 && (
             // @ts-expect-error a tipagem do react-pageflip exige props opcionais (maxHeight, mobileScrollSupport)
             <HTMLFlipBook
+              key={isMobile ? 'mobile' : 'desktop'} /* recria o livro ao trocar entre celular e computador */
               width={Math.round(dimensions.width)}
               height={Math.round(dimensions.height)}
               size="fixed"
@@ -220,17 +226,19 @@ const MagazineViewer = ({ pages }: { pages: string[] }) => {
               }}
               className="magazine-book"
               style={{ backgroundColor: 'transparent' }}
-              startPage={0}
+              startPage={page}
               drawShadow={true}
               flippingTime={1000}
               usePortrait={isMobile}
               startZIndex={0}
               autoSize={false}
               clickEventForward={true}
-              useMouseEvents={true}
+              /* No celular a folha não reage ao toque: a página só vira pelas setas,
+                 e o toque com dois dedos fica livre para o zoom do próprio navegador */
+              useMouseEvents={!isMobile}
               swipeDistance={30}
-              showPageCorners={true}
-              disableFlipByClick={false}
+              showPageCorners={!isMobile}
+              disableFlipByClick={isMobile}
             >
               {pages.map((image, index) => {
                 const isFirstPage = index === 0;

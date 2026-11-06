@@ -1063,8 +1063,8 @@ const HomePage = ({ lang }: { lang: 'pt' | 'en' }) => {
                 </h3>
                 <p className="mt-2 text-base lg:text-[15px] text-gray-600 font-garamond leading-relaxed lg:leading-[1.55]">
                   {lang === 'pt'
-                    ? 'Um olhar singular sobre o mercado imobiliário de alto padrão'
-                    : 'A singular perspective on the high-end real estate market'}
+                    ? 'Um olhar singular sobre o mercado imobiliário de alto padrão.'
+                    : 'A singular perspective on the high-end real estate market.'}
                 </p>
               </Reveal>
 

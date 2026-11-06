@@ -564,7 +564,7 @@ export default function Urbanas() {
                       </span>
                       <div>
                         <span className="text-sm text-black block font-[HeadingNow,sans-serif]! tracking-wider">
-                          {lang === 'en' ? 'BEDROOMS' : 'QUARTOS'}
+                          {lang === 'en' ? 'BEDROOMS' : 'DORMITÓRIOS'}
                         </span>
                         <span className="font-medium">
                           {selectedProperty.specs.beds}

@@ -410,7 +410,7 @@ descriptionEn: "The estate, spanning approximately 55,000 m², is located atop a
                       </span>
                       <div>
                         <span className="text-sm text-black block font-[HeadingNow,sans-serif]! tracking-wider">
-                          {lang === 'en' ? 'BEDROOMS' : 'QUARTOS'}
+                          {lang === 'en' ? 'BEDROOMS' : 'DORMITÓRIOS'}
                         </span>
                         <span className="font-medium">
                           {selectedProperty.specs.beds} 

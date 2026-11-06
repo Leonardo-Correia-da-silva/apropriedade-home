@@ -1043,7 +1043,7 @@ const HomePage = ({ lang }: { lang: 'pt' | 'en' }) => {
 
       <section id="sobre" className="py-16 md:py-20 bg-[#f8f8f8] w-full px-4 sm:px-8 md:px-12 lg:px-20 overflow-hidden">
         <div className="w-full">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-stretch mb-16 md:mb-24">
+          <div className="grid grid-cols-1 lg:grid-cols-[4fr_7fr] gap-10 lg:gap-12 items-stretch mb-16 md:mb-24">
             <div className="w-full h-full min-h-[350px] sm:min-h-[400px] lg:min-h-[60vh]">
               <Reveal className="h-full">
                 <div className="relative w-full h-full">
@@ -1056,26 +1056,35 @@ const HomePage = ({ lang }: { lang: 'pt' | 'en' }) => {
               </Reveal>
             </div>
 
-            <div className="w-full space-y-5 md:space-y-6 flex flex-col justify-center lg:pr-6">
+            <div className="w-full space-y-5 md:space-y-6 lg:space-y-4 flex flex-col justify-center lg:pr-2">
               <Reveal delay={200}>
                 <h3 className="text-3xl font-qlassy text-[#1A1A1A]">
                   {t.about.title}
                 </h3>
+                <p className="mt-2 text-base lg:text-[15px] text-gray-600 font-garamond leading-relaxed lg:leading-[1.55]">
+                  {lang === 'pt'
+                    ? 'Um olhar singular sobre o mercado imobiliário de alto padrão'
+                    : 'A singular perspective on the high-end real estate market'}
+                </p>
               </Reveal>
 
               <Reveal delay={400}>
-                <div className="text-justify space-y-4 text-base text-gray-600 font-garamond leading-relaxed">
+                <div className="text-justify space-y-4 lg:space-y-2.5 text-base lg:text-[15px] text-gray-600 font-garamond leading-relaxed lg:leading-[1.55]">
                   {lang === 'pt' ? (
                     <>
-                      <p>A Propriedade foi criada com a ideia de ser um destino definitivo para imóveis de luxo, de maneira simplificada, tornando a experiência do cliente dinâmica e inesquecível. Apesar de parecer uma empresa jovem, criada em 2022, nosso founder e head da operação, André Rodrigues, já atuava como corretor de imóveis desde 2014 no mercado de alto padrão de lançamento e prontos, na renomada imobiliária Lopes, onde desenvolveu experiências e ferramentas que moldaram sua visão desse setor tão exigente, que demanda muita efetividade, conhecimento e organização.</p>
-                      <p>O nome foi batizado no sentido literal da palavra - A Propriedade, com o intuito de considerar cada propriedade como única, no singular, de modo a desenvolver um trabalho especial e atraente que se destaque dos demais imóveis do mercado. Para isso, A Propriedade aplica técnicas e posicionamentos que dão ao imóvel alta visibilidade, através da inclusão de fotografias profissionais de alta qualidade de resolução, e filmes com técnicas cinematográficas. Assim, nossos clientes têm a possibilidade de uma imersão completa antes mesmo de visitarem o imóvel desejado.</p>
-                      <p>Estamos presentes todos os dias da semana, sempre prontos para tornar a experiência do cliente inesquecível. Entendemos a mentalidade do cliente de alta renda e sabemos onde e como querem estar. Seja nas grandes cidades, no interior, no campo ou no litoral, o que há de mais recente em propriedades de luxo, selecionadas com critérios que valorizam a aquisição sempre com muita ética, cumprimento dos deveres legais e transparência.</p>
+                      <p>Toda propriedade tem uma identidade própria. Mais do que arquitetura, localização ou metragem, cada imóvel reúne características, possibilidades e uma maneira particular de se relacionar com quem o escolhe. É a partir dessa perspectiva que nasce A Propriedade: uma imobiliária dedicada ao mercado de alto padrão, que combina conhecimento, curadoria e apresentação para aproximar propriedades extraordinárias das pessoas certas.</p>
+                      <p>Fundada em 2022, a empresa carrega a experiência de André Rodrigues, seu fundador, que atua no mercado imobiliário desde 2014. Durante sua trajetória, iniciada na Lopes, uma das imobiliárias de referência no setor, desenvolveu uma compreensão prática das exigências desse mercado — onde conhecimento, organização, agilidade e atenção aos detalhes são determinantes para conduzir bons negócios.</p>
+                      <p>O próprio nome traduz nossa filosofia. A Propriedade, no singular, expressa a convicção de que cada imóvel merece ser compreendido e apresentado a partir de sua própria essência. Por isso, cada projeto recebe um olhar individual, com estratégias de posicionamento, fotografia profissional e filmes de linguagem cinematográfica que revelam não apenas os espaços, mas também a atmosfera e as experiências que eles podem proporcionar. Acreditamos que a apresentação de uma propriedade começa muito antes da visita presencial. Imagens cuidadosamente produzidas e narrativas visuais bem construídas permitem que o interessado explore os ambientes, compreenda a arquitetura e estabeleça uma primeira conexão com o lugar. A tecnologia, nesse contexto, não substitui a experiência de estar presente: ela a antecipa e a qualifica.</p>
+                      <p>Nossa atuação acompanha diferentes formas de viver. Das residências urbanas aos refúgios no campo e às propriedades à beira-mar, buscamos oportunidades que correspondam às expectativas de um público exigente, atento à localização, à arquitetura, à privacidade e à qualidade de vida. Mais do que intermediar transações, nosso trabalho consiste em conduzir cada etapa com proximidade, conhecimento e responsabilidade. A transparência nas relações, o respeito aos deveres legais e a ética profissional são princípios que orientam nossas decisões e sustentam a confiança construída ao longo do processo.</p>
+                      <p>A Propriedade. Um olhar atento ao que torna cada imóvel único. Uma maneira própria de apresentar, conectar e realizar negócios.</p>
                     </>
                   ) : (
                     <>
-                      <p>A Propriedade was created to be a definitive destination for luxury real estate, simplifying the process and making the client experience dynamic and unforgettable. Although founded in 2022, our founder and operation head, André Rodrigues, has been active as a real estate broker since 2014 in the high-end market for new and ready-to-move-in properties at the renowned Lopes real estate agency, where he developed experiences and tools that shaped his vision of this demanding sector, which requires great effectiveness, knowledge, and organization.</p>
-                      <p>The name was chosen in the literal sense of the word - A Propriedade (The Property), with the aim of considering each property as unique, in the singular, in order to develop special and attractive work that stands out from other properties on the market. To achieve this, A Propriedade applies techniques and positioning that give the property high visibility, through the inclusion of high-resolution professional photography and films with cinematographic techniques. Thus, our clients have the possibility of complete immersion even before visiting the desired property.</p>
-                      <p>We are present every day of the week, always ready to make the client's experience unforgettable. We understand the mindset of high-income clients and know where and how they want to be. Whether in major cities, the countryside, or the coast, we select the latest in luxury properties with criteria that always value acquisition with great ethics, compliance with legal duties, and transparency.</p>
+                      <p>Every property has its own identity. Beyond architecture, location, or square footage, each home brings together characteristics, possibilities, and a particular way of relating to those who choose it. It is from this perspective that A Propriedade was born: a real estate firm dedicated to the high-end market, combining knowledge, curation, and presentation to bring extraordinary properties closer to the right people.</p>
+                      <p>Founded in 2022, the company carries the experience of André Rodrigues, its founder, who has worked in real estate since 2014. Throughout his career, which began at Lopes, one of the leading real estate firms in the sector, he developed a practical understanding of the demands of this market — where knowledge, organization, agility, and attention to detail are decisive in conducting good business.</p>
+                      <p>Our name itself expresses our philosophy. A Propriedade — “The Property,” in the singular — reflects the conviction that each property deserves to be understood and presented from its own essence. That is why every project receives individual attention, with positioning strategies, professional photography, and cinematic films that reveal not only the spaces but also the atmosphere and the experiences they can offer. We believe that presenting a property begins long before the in-person visit. Carefully produced images and well-crafted visual narratives allow those interested to explore the spaces, understand the architecture, and establish a first connection with the place. Technology, in this context, does not replace the experience of being there: it anticipates and enhances it.</p>
+                      <p>Our work embraces different ways of living. From urban residences to countryside retreats and beachfront properties, we seek opportunities that meet the expectations of a discerning audience, attentive to location, architecture, privacy, and quality of life. More than brokering transactions, our work is about guiding each step with closeness, knowledge, and responsibility. Transparency in our relationships, respect for legal obligations, and professional ethics are the principles that guide our decisions and sustain the trust built throughout the process.</p>
+                      <p>A Propriedade. A careful eye for what makes each property unique. A distinctive way to present, connect, and close deals.</p>
                     </>
                   )}
                 </div>

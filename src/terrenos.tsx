@@ -182,11 +182,30 @@ export default function Terrenos() {
       descriptionEn: "A lot for sale with excellent topography, just a few minutes from the Fazenda Duas Marias Jaguariúna condominium. With 510 m², it is located on a quiet, tree-lined cul-de-sac street. With an almost imperceptible upward slope, it is ideal for designing your dream home.\n\nA complete condominium with 24-hour security and gatehouse, patrols, access control, and camera monitoring. The club leisure area offers many attractions, such as: adult and children's pools, a modern gym, spa, party hall, gourmet area, toy library, kids' area, tennis courts, beach tennis, multi-sport court, soccer field, a long walking track, a lake with a deck for contemplation, and much more!"
     },
     {
+      id: 3,
+      title: "Condomínio Alphaville Dom Pedro II",
+      titleEn: "Alphaville Dom Pedro II Gated Community",
+      location: "Campinas, SP",
+      price: "R$ 1.460.000,00",
+      images: [
+        "/categorias/terrenos/alphaville-dom-pedro-ii/10.jpg",
+        "/categorias/terrenos/alphaville-dom-pedro-ii/1.jpg",
+        "/categorias/terrenos/alphaville-dom-pedro-ii/2.jpg",
+        "/categorias/terrenos/alphaville-dom-pedro-ii/3.jpg",
+        "/categorias/terrenos/alphaville-dom-pedro-ii/4.jpg",
+        "/categorias/terrenos/alphaville-dom-pedro-ii/5.jpg",
+      ],
+      gallery: gallery("terrenos/alphaville-dom-pedro-ii"),
+      specs: { size: "534m²" },
+      description: "Terreno disponível para venda em excelente localização do condomínio Alphaville Dom Pedro II, em Campinas. Com topografia quase plana, possibilita uma construção mais dinâmica, podendo explorar a criatividade de variados projetos arquitetônicos de destaque. Vizinhança já toda formada, tanto na frente como na lateral e no fundo. Lote privativo e exclusivo.\n\nO condomínio Alphaville Dom Pedro II é um dos mais renomados da cidade. Conta com segurança e portaria 24 horas, operando com controle de acesso de moradores, visitantes e prestadores de serviços, monitoramento via câmeras e ronda. A área de lazer do residencial é super estruturada, contando com piscinas adulto e infantil, beach tennis, quadra de tênis, quadra poliesportiva, campo de futebol, academia / fitness moderna, salão de festas, espaço gourmet, playground e mais!",
+      descriptionEn: "A lot for sale in an excellent location within the Alphaville Dom Pedro II condominium, in Campinas. Its almost flat topography allows for a more dynamic construction, opening room for the creativity of a wide range of outstanding architectural designs. The neighborhood is fully built at the front, sides, and back. A private and exclusive lot.\n\nThe Alphaville Dom Pedro II condominium is one of the most renowned in the city. It has 24-hour security and gatehouse, with access control for residents, visitors, and service providers, camera monitoring, and patrols. The community's leisure area is very well structured, with adult and children's pools, beach tennis, tennis court, multi-sport court, soccer field, a modern gym / fitness center, party hall, gourmet area, playground, and more!"
+    },
+    {
       id: 2,
-      title: "Condomínio - Fazenda da Grama",
+      title: "Condomínio Fazenda da Grama",
       titleEn: "Fazenda da Grama Gated Community",
       location: "Itupeva, SP",
-      price: "R$ 6.899.900,00",
+      price: "R$ 6.200.000,00",
       images: [
         "/categorias/terrenos/lotefazendadagrama/5.jpg",
         "/categorias/terrenos/lotefazendadagrama/1.jpg",
@@ -199,25 +218,6 @@ export default function Terrenos() {
       specs: { size: "2.669m²" },
       description: "Lote de terreno à venda já com acesso incluso à Praia da Grama. Com 2.669 m² de área, tem excelente topografia e está localizado em uma esquina em frente ao acesso do clube e do campo de golfe, e também próximo à trilha do bosque. Por estar em ponto alto do condomínio, com vista ampla, possibilita a implantação de variados projetos de arquitetura que valorizam a vista. Ideal para quem quer ir até o clube caminhando, pois está ao lado das áreas de lazer.\n\nSeu imóvel no interior com acesso à praia particular com ondas o dia todo. Areia e lojas pela orla transformam o morar em uma experiência inesquecível, com segurança de alto nível, luxo e valorização patrimonial.",
       descriptionEn: "A lot for sale with access to Praia da Grama already included. With 2,669 m², it has excellent topography and sits on a corner across from the entrance to the club and golf course, close to the woodland trail. Located on high ground within the condominium, with a wide view, it allows for a variety of architectural designs that make the most of the view. Ideal for those who want to walk to the club, as it is right next to the leisure areas.\n\nYour countryside property with access to a private beach with waves all day long. Sand and shops along the shore turn living here into an unforgettable experience, with top-level security, luxury, and appreciating value."
-    },
-    {
-      id: 3,
-      title: "Condomínio - Alphaville Dom Pedro II",
-      titleEn: "Alphaville Dom Pedro II Gated Community",
-      location: "Campinas, SP",
-      price: "R$ 1.460.000,00",
-      images: [
-        "/categorias/terrenos/alphaville-dom-pedro-ii/1.jpg",
-        "/categorias/terrenos/alphaville-dom-pedro-ii/2.jpg",
-        "/categorias/terrenos/alphaville-dom-pedro-ii/3.jpg",
-        "/categorias/terrenos/alphaville-dom-pedro-ii/4.jpg",
-        "/categorias/terrenos/alphaville-dom-pedro-ii/5.jpg",
-        "/categorias/terrenos/alphaville-dom-pedro-ii/6.jpg",
-      ],
-      gallery: gallery("terrenos/alphaville-dom-pedro-ii"),
-      specs: { size: "534m²" },
-      description: "Terreno disponível para venda em excelente localização do condomínio Alphaville Dom Pedro II, em Campinas. Com topografia quase plana, possibilita uma construção mais dinâmica, podendo explorar a criatividade de variados projetos arquitetônicos de destaque. Vizinhança já toda formada, tanto na frente como na lateral e no fundo. Lote privativo e exclusivo.\n\nO condomínio Alphaville Dom Pedro II é um dos mais renomados da cidade. Conta com segurança e portaria 24 horas, operando com controle de acesso de moradores, visitantes e prestadores de serviços, monitoramento via câmeras e ronda. A área de lazer do residencial é super estruturada, contando com piscinas adulto e infantil, beach tennis, quadra de tênis, quadra poliesportiva, campo de futebol, academia / fitness moderna, salão de festas, espaço gourmet, playground e mais!",
-      descriptionEn: "A lot for sale in an excellent location within the Alphaville Dom Pedro II condominium, in Campinas. Its almost flat topography allows for a more dynamic construction, opening room for the creativity of a wide range of outstanding architectural designs. The neighborhood is fully built at the front, sides, and back. A private and exclusive lot.\n\nThe Alphaville Dom Pedro II condominium is one of the most renowned in the city. It has 24-hour security and gatehouse, with access control for residents, visitors, and service providers, camera monitoring, and patrols. The community's leisure area is very well structured, with adult and children's pools, beach tennis, tennis court, multi-sport court, soccer field, a modern gym / fitness center, party hall, gourmet area, playground, and more!"
     }
   ];
 

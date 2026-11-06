@@ -193,7 +193,7 @@ export default function Urbanas() {
       title: "Condomínio Fazenda Duas Marias Jaguariúna",
       titleEn: "Fazenda Duas Marias Condominium, Jaguariúna",
       location: "Jaguariúna, SP",
-      price: "R$ 17.990.000,00",
+      price: "R$ 14.980.000,00",
       images: [
         "/categorias/casas_urbanas/duasMarias/45.jpg",
         "/categorias/casas_urbanas/duasMarias/37.jpg",

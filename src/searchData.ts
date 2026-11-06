@@ -78,7 +78,7 @@ export const searchProperties: SearchProperty[] = [
     title: "Condomínio Fazenda Duas Marias Jaguariúna",
     titleEn: "Fazenda Duas Marias Condominium, Jaguariúna",
     location: "Jaguariúna, SP",
-    price: "R$ 17.990.000,00",
+    price: "R$ 14.980.000,00",
     image: "/categorias/casas_urbanas/duasMarias/45.jpg",
     beds: 6, baths: 10, cars: 8, totalArea: "10.004m²", builtArea: "850m²"
   },
@@ -258,10 +258,10 @@ export const searchProperties: SearchProperty[] = [
     categoryPath: "/casasdemontanha",
     categoryLabel: "Terrenos",
     categoryLabelEn: "Land Plots",
-    title: "Condomínio - Fazenda da Grama",
+    title: "Condomínio Fazenda da Grama",
     titleEn: "Plot in Prime Area",
     location: "Itupeva, SP",
-    price: "R$ 6.899.900,00",
+    price: "R$ 6.200.000,00",
     image: "/categorias/terrenos/lotefazendadagrama/5.jpg",
     totalArea: "2.669m²"
   },
@@ -270,11 +270,11 @@ export const searchProperties: SearchProperty[] = [
     categoryPath: "/casasdemontanha",
     categoryLabel: "Terrenos",
     categoryLabelEn: "Land Plots",
-    title: "Condomínio - Alphaville Dom Pedro II",
+    title: "Condomínio Alphaville Dom Pedro II",
     titleEn: "Panoramic Plot",
     location: "Campinas, SP",
     price: "R$ 1.460.000,00",
-    image: "/categorias/terrenos/alphaville-dom-pedro-ii/1.jpg",
+    image: "/categorias/terrenos/alphaville-dom-pedro-ii/10.jpg",
     totalArea: "534m²"
   }
 ];

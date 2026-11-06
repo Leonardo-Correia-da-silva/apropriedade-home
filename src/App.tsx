@@ -150,7 +150,7 @@ const Header = ({ lang, setLang }: { lang: 'pt' | 'en'; setLang: (l: 'pt' | 'en'
     ? searchProperties.filter((p) => {
         const haystack = normalizeText([
           p.title, p.titleEn, p.location, p.price, p.categoryLabel, p.categoryLabelEn,
-          p.beds ? `${p.beds} quartos suites bedrooms suites` : '',
+          p.beds ? `${p.beds} dormitorios quartos suites bedrooms suites` : '',
           p.baths ? `${p.baths} banheiros bathrooms` : '',
           p.cars ? `${p.cars} vagas garagem parking` : '',
           p.sold ? 'vendido sold' : '',

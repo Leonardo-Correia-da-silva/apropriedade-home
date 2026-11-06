@@ -406,7 +406,7 @@ descriptionEn: "The estate, spanning approximately 55,000 m², is located atop a
                     <div className="flex flex-col lg:flex-row items-center gap-2 lg:gap-4 py-2 border-b border-gray-50 text-center lg:text-left">
                       <span className="icon-tooltip-wrapper">
                         <BedDouble size={20} className="text-gray-400 stroke-[1.5]" />
-                        <span className="icon-tooltip">{lang === 'en' ? 'Bedrooms' : 'Quartos'}</span>
+                        <span className="icon-tooltip">{lang === 'en' ? 'Bedrooms' : 'Dormitórios'}</span>
                       </span>
                       <div>
                         <span className="text-sm text-black block font-[HeadingNow,sans-serif]! tracking-wider">
@@ -577,7 +577,7 @@ descriptionEn: "The estate, spanning approximately 55,000 m², is located atop a
                       <div className="flex items-center gap-2">
                         <span className="icon-tooltip-wrapper">
                           <BedDouble size={18} className="text-gray-500" />
-                          <span className="icon-tooltip">{lang === 'en' ? 'Bedrooms' : 'Quartos'}</span>
+                          <span className="icon-tooltip">{lang === 'en' ? 'Bedrooms' : 'Dormitórios'}</span>
                         </span>
                         <span className="nav-label text-[10px] text-gray-500">{item.specs.beds}</span>
                       </div>

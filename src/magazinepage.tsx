@@ -238,7 +238,10 @@ const MagazineViewer = ({ pages }: { pages: string[] }) => {
               useMouseEvents={!isMobile}
               swipeDistance={30}
               showPageCorners={!isMobile}
-              disableFlipByClick={isMobile}
+              /* fica false: com true, a biblioteca ignora a seta da esquerda no celular
+                 (o ponto que ela usa para voltar página fica fora da folha); o toque
+                 na folha já está desligado por useMouseEvents */
+              disableFlipByClick={false}
             >
               {pages.map((image, index) => {
                 const isFirstPage = index === 0;

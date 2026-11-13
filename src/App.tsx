@@ -19,6 +19,7 @@ import {
   Bath,
   Car,
   CornerDownLeft,
+  ChevronDown,
 } from 'lucide-react';
 
 
@@ -642,6 +643,7 @@ const Footer = ({ lang }: { lang: 'pt' | 'en' }) => {
   const [isNewsletterOpen, setIsNewsletterOpen] = useState(false);
   const [formData, setFormData] = useState({ name: '', phone: '' });
   const [isSending, setIsSending] = useState(false);
+  const [isFooterPropOpen, setIsFooterPropOpen] = useState(false);
 
   const FORMSPREE_ID = "";
   const USE_AUTOMATIC_SEND = false;
@@ -733,6 +735,38 @@ const Footer = ({ lang }: { lang: 'pt' | 'en' }) => {
             <ul className="flex flex-col items-center md:items-start space-y-2.5">
               {t.nav.map((item, i) => {
                 const path = menuRoutes[item] || "#";
+                // "Propriedades": abre a lista de categorias, como o menu do topo
+                if (item === "Propriedades" || item === "Properties") {
+                  return (
+                    <li key={i} className="flex flex-col items-center md:items-start">
+                      <button
+                        type="button"
+                        onClick={() => setIsFooterPropOpen((open) => !open)}
+                        aria-expanded={isFooterPropOpen}
+                        className="group w-fit relative text-gray-500 hover:text-black transition-colors text-xs font-bold tracking-[0.1em] uppercase flex items-center gap-1 pb-1"
+                      >
+                        <span className="lang-fade-text">{item}</span>
+                        <ChevronDown size={12} strokeWidth={2.5} className={`transition-transform duration-300 ${isFooterPropOpen ? 'rotate-180' : ''}`} />
+                        <span className="absolute left-0 bottom-0 w-0 h-[1.5px] bg-black transition-all duration-500 ease-in-out group-hover:w-full"></span>
+                      </button>
+                      {isFooterPropOpen && (
+                        <ul className="flex flex-col items-center md:items-start space-y-2 mt-2 md:pl-3 md:border-l md:border-gray-200">
+                          {t.propTitles.map((title, idx) => (
+                            <li key={idx} className="group w-fit">
+                              <Link
+                                to={t.propPaths[idx]}
+                                className="relative text-gray-400 hover:text-black transition-colors text-[11px] font-bold tracking-[0.1em] uppercase block pb-1"
+                              >
+                                {title}
+                                <span className="absolute left-0 bottom-0 w-0 h-[1px] bg-black transition-all duration-500 ease-in-out group-hover:w-full"></span>
+                              </Link>
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+                    </li>
+                  );
+                }
                 return (
                   <li key={i} className="group w-fit">
                     <Link

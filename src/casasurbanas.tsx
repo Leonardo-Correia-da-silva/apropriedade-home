@@ -84,6 +84,7 @@ interface PropertyListItem {
   description?: string;
   descriptionEn?: string;
   soon?: boolean; // faixa "EM BREVE": imóvel no site, mas a venda ainda não começou
+  sold?: boolean; // faixa "VENDIDO"
 }
 
 const translations = {
@@ -96,7 +97,8 @@ const translations = {
     perMonth: "/mês",
     overview: "Visão Geral",
     features: "Características",
-    soon: "EM BREVE"
+    soon: "EM BREVE",
+    sold: "VENDIDO"
   },
   en: {
     segmentTitle: "Urban Houses",
@@ -107,7 +109,8 @@ const translations = {
     perMonth: "/month",
     overview: "Overview",
     features: "Features",
-    soon: "COMING SOON"
+    soon: "COMING SOON",
+    sold: "SOLD"
   }
 };
 
@@ -257,6 +260,7 @@ export default function Urbanas() {
     {
       id: 7,
       title: "Villagio Via Condotti",
+      sold: true,
       titleEn: "Villagio Via Condotti",
       location: "Campinas, SP",
       price: "R$ 3.500.000,00",
@@ -498,8 +502,8 @@ export default function Urbanas() {
           </div>
 
           <div className="w-full h-[80vh] md:h-screen relative bg-gray-900 skeleton-dark">
-            {selectedProperty.soon && (
-              <div className="sold-badge">{t.soon}</div>
+            {(selectedProperty.sold || selectedProperty.soon) && (
+              <div className="sold-badge">{selectedProperty.sold ? t.sold : t.soon}</div>
             )}
             <Img
               src={selectedProperty.images[0]}
@@ -666,9 +670,9 @@ export default function Urbanas() {
                 return (
                   <div key={item.id} className="group cursor-pointer" onClick={() => handleOpenDetails(item)}>
                     <div className="relative overflow-hidden rounded-sm mb-6 w-full pt-[62.5%] bg-gray-50 skeleton">
-                      {item.soon && (
+                      {(item.sold || item.soon) && (
                         <div className="sold-ribbon-wrapper">
-                          <div className="sold-ribbon">{t.soon}</div>
+                          <div className="sold-ribbon">{item.sold ? t.sold : t.soon}</div>
                         </div>
                       )}
                       {item.images.map((imgSrc, idx) => (

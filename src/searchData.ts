@@ -114,6 +114,7 @@ export const searchProperties: SearchProperty[] = [
     categoryLabel: "Casas Urbanas",
     categoryLabelEn: "Urban Houses",
     title: "Villagio Via Condotti",
+    sold: true,
     titleEn: "Villagio Via Condotti",
     location: "Campinas, SP",
     price: "R$ 3.500.000,00",

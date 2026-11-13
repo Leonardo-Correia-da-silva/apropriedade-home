@@ -49,6 +49,11 @@ const StyleInjector = memo(() => (
       text-align: justify;
     }
 
+    .sold-ribbon-wrapper { position: absolute; top: 0; left: 0; width: 140px; height: 140px; overflow: hidden; z-index: 40; pointer-events: none; }
+    .sold-ribbon { position: absolute; top: 28px; left: -38px; width: 180px; transform: rotate(-45deg); background: #1a1a1a; color: #fff; text-align: center; padding: 6px 0; font-family: 'NeueHelvetica', sans-serif; font-size: 11px; font-weight: bold; letter-spacing: 0.2em; box-shadow: 0 2px 8px rgba(0,0,0,0.25); }
+    .sold-badge { position: absolute; top: 24px; right: 24px; z-index: 40; background: #1a1a1a; color: #fff; font-family: 'NeueHelvetica', sans-serif; font-size: 12px; font-weight: bold; letter-spacing: 0.2em; padding: 10px 18px; box-shadow: 0 2px 8px rgba(0,0,0,0.25); pointer-events: none; }
+    @media (min-width: 768px) { .sold-badge { top: 32px; right: 48px; } }
+
     .animate-fadeIn {
       animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
@@ -78,6 +83,7 @@ interface PropertyListItem {
   };
   description?: string;
   descriptionEn?: string;
+  soon?: boolean; // faixa "EM BREVE": imóvel no site, mas a venda ainda não começou
 }
 
 const translations = {
@@ -89,7 +95,8 @@ const translations = {
     rentValue: "Valor de Locação",
     perMonth: "/mês",
     overview: "Visão Geral",
-    features: "Características"
+    features: "Características",
+    soon: "EM BREVE"
   },
   en: {
     segmentTitle: "Urban Houses",
@@ -99,7 +106,8 @@ const translations = {
     rentValue: "Monthly Rent",
     perMonth: "/month",
     overview: "Overview",
-    features: "Features"
+    features: "Features",
+    soon: "COMING SOON"
   }
 };
 
@@ -229,6 +237,7 @@ export default function Urbanas() {
     {
       id: 6,
       title: "Casa no Bairro Cidade Jardim",
+      soon: true,
       titleEn: "House in the Cidade Jardim Neighborhood",
       location: "São Paulo, SP",
       price: "R$ 17.990.000,00",
@@ -489,6 +498,9 @@ export default function Urbanas() {
           </div>
 
           <div className="w-full h-[80vh] md:h-screen relative bg-gray-900 skeleton-dark">
+            {selectedProperty.soon && (
+              <div className="sold-badge">{t.soon}</div>
+            )}
             <Img
               src={selectedProperty.images[0]}
               alt={lang === 'en' && selectedProperty.titleEn ? selectedProperty.titleEn : selectedProperty.title}
@@ -654,6 +666,11 @@ export default function Urbanas() {
                 return (
                   <div key={item.id} className="group cursor-pointer" onClick={() => handleOpenDetails(item)}>
                     <div className="relative overflow-hidden rounded-sm mb-6 w-full pt-[62.5%] bg-gray-50 skeleton">
+                      {item.soon && (
+                        <div className="sold-ribbon-wrapper">
+                          <div className="sold-ribbon">{t.soon}</div>
+                        </div>
+                      )}
                       {item.images.map((imgSrc, idx) => (
                         <Img
                           key={idx}

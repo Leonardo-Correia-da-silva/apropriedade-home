@@ -155,6 +155,7 @@ const Header = ({ lang, setLang }: { lang: 'pt' | 'en'; setLang: (l: 'pt' | 'en'
           p.baths ? `${p.baths} banheiros bathrooms` : '',
           p.cars ? `${p.cars} vagas garagem parking` : '',
           p.sold ? 'vendido sold' : '',
+          p.soon ? 'em breve coming soon' : '',
           p.deal === 'alugar' ? 'aluguel alugar locacao rent rental' : 'venda comprar sale buy'
         ].join(' '));
         return queryWords.every((word) => haystack.includes(word));
@@ -548,6 +549,11 @@ const Header = ({ lang, setLang }: { lang: 'pt' | 'en'; setLang: (l: 'pt' | 'en'
                                   {p.sold && (
                                     <span className="text-[9px] font-bold tracking-widest uppercase bg-gray-900 text-white px-2 py-0.5 rounded-full flex-shrink-0">
                                       {lang === 'pt' ? 'Vendido' : 'Sold'}
+                                    </span>
+                                  )}
+                                  {p.soon && (
+                                    <span className="text-[9px] font-bold tracking-widest uppercase bg-gray-900 text-white px-2 py-0.5 rounded-full flex-shrink-0">
+                                      {lang === 'pt' ? 'Em breve' : 'Coming soon'}
                                     </span>
                                   )}
                                 </div>

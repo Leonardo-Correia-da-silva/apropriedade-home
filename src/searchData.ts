@@ -14,6 +14,7 @@ export interface SearchProperty {
   totalArea?: string;
   builtArea?: string;
   sold?: boolean;
+  soon?: boolean; // em breve
   deal?: 'comprar' | 'alugar'; // padrão: comprar
 }
 
@@ -100,6 +101,7 @@ export const searchProperties: SearchProperty[] = [
     categoryLabel: "Casas Urbanas",
     categoryLabelEn: "Urban Houses",
     title: "Casa no Bairro Cidade Jardim",
+    soon: true,
     titleEn: "House in the Cidade Jardim Neighborhood",
     location: "São Paulo, SP",
     price: "R$ 17.990.000,00",
